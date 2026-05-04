@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "editorconfig.editorconfig",
+    "humao.rest-client",
+    "eamodio.gitlens",
+    "dotenv.dotenv-vscode",
+    "ms-ossdata.vscode-pgsql",
+    "prisma.prisma",
+    "ms-azuretools.vscode-containers"
+  ]
+}
