@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { envValidationSchema } from './config/env.validation';
 import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
 
 @Module({
@@ -13,6 +14,7 @@ import { HealthModule } from './modules/health/health.module';
       validationSchema: envValidationSchema,
     }),
     DatabaseModule,
+    AuthModule,
     HealthModule,
   ],
   controllers: [AppController],
