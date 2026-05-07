@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -74,6 +75,16 @@ export class AuthService {
         updatedAt: user.updatedAt,
       },
     };
+  }
+
+  async getCurrentUser(userId: string): Promise<PublicUser> {
+    const user = await this.usersService.findPublicById(userId);
+
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    return user;
   }
 
   private async signToken(userId: string, email: string): Promise<string> {

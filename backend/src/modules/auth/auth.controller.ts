@@ -1,7 +1,18 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import type { AuthenticatedRequest } from './auth.types';
 
 @Controller('auth')
 export class AuthController {
@@ -22,5 +33,11 @@ export class AuthController {
       loginDto.email ?? '',
       loginDto.password ?? '',
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  getCurrentUser(@Req() request: AuthenticatedRequest) {
+    return this.authService.getCurrentUser(request.user.id);
   }
 }

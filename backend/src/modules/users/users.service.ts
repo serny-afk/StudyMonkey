@@ -71,4 +71,22 @@ export class UsersService {
 
     return result.rows[0] ?? null;
   }
+
+  async findPublicById(userId: string): Promise<PublicUser | null> {
+    const result = await this.databaseService.query<PublicUser>(
+      `
+        SELECT
+          id,
+          email,
+          created_at AS "createdAt",
+          updated_at AS "updatedAt"
+        FROM users
+        WHERE id = $1
+        LIMIT 1
+      `,
+      [userId],
+    );
+
+    return result.rows[0] ?? null;
+  }
 }
