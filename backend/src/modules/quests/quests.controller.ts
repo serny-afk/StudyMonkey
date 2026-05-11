@@ -32,6 +32,42 @@ export class QuestsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post(':id/start')
+  startQuest(
+    @Req() request: AuthenticatedRequest,
+    @Param('id') questId: string,
+  ) {
+    return this.questsService.startQuest(request.user.id, questId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/pause')
+  pauseQuest(
+    @Req() request: AuthenticatedRequest,
+    @Param('id') questId: string,
+  ) {
+    return this.questsService.pauseQuest(request.user.id, questId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/resume')
+  resumeQuest(
+    @Req() request: AuthenticatedRequest,
+    @Param('id') questId: string,
+  ) {
+    return this.questsService.resumeQuest(request.user.id, questId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/complete')
+  completeQuest(
+    @Req() request: AuthenticatedRequest,
+    @Param('id') questId: string,
+  ) {
+    return this.questsService.completeQuest(request.user.id, questId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post()
   createQuest(
     @Req() request: AuthenticatedRequest,
