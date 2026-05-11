@@ -1,3 +1,5 @@
+import { CharacterRecord } from '../users/users.types';
+
 export type QuestSessionRecord = {
   id: string;
   userId: string;
@@ -11,4 +13,10 @@ export type QuestSessionRecord = {
   endedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type CompleteQuestResult = {
+  quest: QuestSessionRecord;
+  xpAwarded: number;
+  character: CharacterRecord;
 };
