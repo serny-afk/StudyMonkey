@@ -20,19 +20,13 @@ export class AuthController {
 
   @Post('register')
   register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(
-      registerDto.email ?? '',
-      registerDto.password ?? '',
-    );
+    return this.authService.register(registerDto.email, registerDto.password);
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
   login(@Body() loginDto: LoginDto) {
-    return this.authService.login(
-      loginDto.email ?? '',
-      loginDto.password ?? '',
-    );
+    return this.authService.login(loginDto.email, loginDto.password);
   }
 
   @UseGuards(JwtAuthGuard)

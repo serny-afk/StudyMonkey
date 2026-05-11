@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -25,8 +24,6 @@ export class AuthService {
 
   async register(email: string, password: string): Promise<AuthResponse> {
     const normalizedEmail = this.normalizeEmail(email);
-    this.validateCredentials(normalizedEmail, password);
-
     const passwordHash = await hash(password, 12);
 
     try {
@@ -54,7 +51,6 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<AuthResponse> {
     const normalizedEmail = this.normalizeEmail(email);
-    this.validateCredentials(normalizedEmail, password);
 
     const user = await this.usersService.findByEmail(normalizedEmail);
     if (!user) {
@@ -96,22 +92,6 @@ export class AuthService {
 
   private normalizeEmail(email: string): string {
     return email.trim().toLowerCase();
-  }
-
-  private validateCredentials(email: string, password: string): void {
-    if (!email || !password) {
-      throw new BadRequestException('Email and password are required.');
-    }
-
-    if (!email.includes('@')) {
-      throw new BadRequestException('Email must be valid.');
-    }
-
-    if (password.length < 8) {
-      throw new BadRequestException(
-        'Password must be at least 8 characters long.',
-      );
-    }
   }
 
   private isUniqueViolation(error: unknown): error is { code: string } {

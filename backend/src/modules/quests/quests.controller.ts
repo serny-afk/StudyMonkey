@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Req,
   UseGuards,
@@ -26,7 +27,7 @@ export class QuestsController {
   @Get(':id')
   getQuestById(
     @Req() request: AuthenticatedRequest,
-    @Param('id') questId: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) questId: string,
   ) {
     return this.questsService.getQuestByIdForUser(request.user.id, questId);
   }
@@ -35,7 +36,7 @@ export class QuestsController {
   @Post(':id/start')
   startQuest(
     @Req() request: AuthenticatedRequest,
-    @Param('id') questId: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) questId: string,
   ) {
     return this.questsService.startQuest(request.user.id, questId);
   }
@@ -44,7 +45,7 @@ export class QuestsController {
   @Post(':id/pause')
   pauseQuest(
     @Req() request: AuthenticatedRequest,
-    @Param('id') questId: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) questId: string,
   ) {
     return this.questsService.pauseQuest(request.user.id, questId);
   }
@@ -53,7 +54,7 @@ export class QuestsController {
   @Post(':id/resume')
   resumeQuest(
     @Req() request: AuthenticatedRequest,
-    @Param('id') questId: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) questId: string,
   ) {
     return this.questsService.resumeQuest(request.user.id, questId);
   }
@@ -62,7 +63,7 @@ export class QuestsController {
   @Post(':id/complete')
   completeQuest(
     @Req() request: AuthenticatedRequest,
-    @Param('id') questId: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) questId: string,
   ) {
     return this.questsService.completeQuest(request.user.id, questId);
   }
@@ -75,8 +76,8 @@ export class QuestsController {
   ) {
     return this.questsService.createQuest(
       request.user.id,
-      createQuestDto.title ?? '',
-      Number(createQuestDto.plannedDurationMinutes),
+      createQuestDto.title,
+      createQuestDto.plannedDurationMinutes,
     );
   }
 }
