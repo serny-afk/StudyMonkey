@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CharacterModule } from './modules/character/character.module';
 import { HealthModule } from './modules/health/health.module';
+import { QuestsModule } from './modules/quests/quests.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { HealthModule } from './modules/health/health.module';
     AuthModule,
     CharacterModule,
     HealthModule,
+    QuestsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
