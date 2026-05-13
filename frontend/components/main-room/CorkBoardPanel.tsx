@@ -1,21 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import type { Quest } from "./MainRoomScreen";
+import type { QuestSessionRecord } from "../../lib/api";
 
 interface CorkBoardPanelProps {
-  quests: Quest[];
-  onToggleQuest: (id: string) => void;
+  quests: QuestSessionRecord[];
   onClose: () => void;
 }
 
-const CATEGORY_LABELS = { daily: "Today", weekly: "This Week" };
-const CATEGORY_COLORS = { daily: "#c8773a", weekly: "#7a9e7e" };
+function formatDuration(seconds: number): string {
+  const minutes = Math.max(Math.floor(seconds / 60), 0);
+  return `${minutes} min`;
+}
 
-export default function CorkBoardPanel({ quests, onToggleQuest, onClose }: CorkBoardPanelProps) {
-  const [filter, setFilter] = useState<"all" | "daily" | "weekly">("all");
-  const filtered = quests.filter((q) => filter === "all" || q.category === filter);
-  const completedCount = quests.filter((q) => q.completed).length;
+export default function CorkBoardPanel({ quests, onClose }: CorkBoardPanelProps) {
+  const [filter, setFilter] = useState<"all" | "open" | "completed">("all");
+  const filtered = quests.filter((q) => {
+    if (filter === "all") return true;
+    if (filter === "completed") return q.status === "completed";
+    return q.status !== "completed";
+  });
+  const completedCount = quests.filter((q) => q.status === "completed").length;
   const totalCount = quests.length;
 
   return (
@@ -66,7 +71,7 @@ export default function CorkBoardPanel({ quests, onToggleQuest, onClose }: CorkB
           </div>
 
           <div className="flex gap-1 mb-3 p-1" style={{ background: "var(--parchment-dark)", borderRadius: "6px" }}>
-            {(["all", "daily", "weekly"] as const).map((cat) => (
+            {(["all", "open", "completed"] as const).map((cat) => (
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}
@@ -84,41 +89,35 @@ export default function CorkBoardPanel({ quests, onToggleQuest, onClose }: CorkB
                 }}
                 type="button"
               >
-                {cat === "all" ? "All" : CATEGORY_LABELS[cat]}
+                {cat === "all" ? "All" : cat === "open" ? "Open" : "Completed"}
               </button>
             ))}
           </div>
 
           <div className="scrollbar-cozy" style={{ maxHeight: "240px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "6px" }}>
+            {filtered.length === 0 && (
+              <p style={{ fontSize: "12px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
+                No quests in this view yet.
+              </p>
+            )}
             {filtered.map((quest) => (
               <div
                 key={quest.id}
                 className="flex items-start gap-2.5"
                 style={{
-                  padding: "8px 10px",
+                  padding: "10px",
                   borderRadius: "6px",
-                  background: quest.completed ? "rgba(122,158,126,0.08)" : "rgba(61,43,31,0.03)",
-                  border: `1px solid ${quest.completed ? "rgba(122,158,126,0.2)" : "rgba(61,43,31,0.08)"}`,
-                  cursor: "pointer"
+                  background: quest.status === "completed" ? "rgba(122,158,126,0.08)" : "rgba(61,43,31,0.03)",
+                  border: `1px solid ${quest.status === "completed" ? "rgba(122,158,126,0.2)" : "rgba(61,43,31,0.08)"}`
                 }}
-                onClick={() => onToggleQuest(quest.id)}
               >
-                <input
-                  type="checkbox"
-                  className="quest-check"
-                  checked={quest.completed}
-                  onChange={() => onToggleQuest(quest.id)}
-                  onClick={(e) => e.stopPropagation()}
-                  aria-label={`Complete ${quest.title}`}
-                />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p
                     style={{
                       fontSize: "12px",
                       fontWeight: 500,
-                      color: quest.completed ? "var(--ink-light)" : "var(--ink)",
+                      color: quest.status === "completed" ? "var(--ink-light)" : "var(--ink)",
                       fontFamily: "var(--font-sans)",
-                      textDecoration: quest.completed ? "line-through" : "none",
                       lineHeight: 1.4
                     }}
                   >
@@ -132,15 +131,28 @@ export default function CorkBoardPanel({ quests, onToggleQuest, onClose }: CorkB
                         letterSpacing: "0.06em",
                         padding: "1px 5px",
                         borderRadius: "99px",
-                        background: `${CATEGORY_COLORS[quest.category]}22`,
-                        color: CATEGORY_COLORS[quest.category],
+                        background:
+                          quest.status === "completed"
+                            ? "rgba(122,158,126,0.15)"
+                            : quest.status === "active"
+                              ? "rgba(200,119,58,0.15)"
+                              : "rgba(61,43,31,0.08)",
+                        color:
+                          quest.status === "completed"
+                            ? "#5a8060"
+                            : quest.status === "active"
+                              ? "#c8773a"
+                              : "var(--ink-light)",
                         fontFamily: "var(--font-sans)"
                       }}
                     >
-                      {CATEGORY_LABELS[quest.category].toUpperCase()}
+                      {quest.status.toUpperCase()}
                     </span>
-                    <span style={{ fontSize: "10px", color: "#c8773a", fontFamily: "var(--font-sans)", fontWeight: 600 }}>
-                      +{quest.xpReward} XP
+                    <span style={{ fontSize: "10px", color: "var(--ink-light)", fontFamily: "var(--font-sans)", fontWeight: 600 }}>
+                      {quest.plannedDurationMinutes} min planned
+                    </span>
+                    <span style={{ fontSize: "10px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
+                      {formatDuration(quest.actualDurationSeconds)} logged
                     </span>
                   </div>
                 </div>

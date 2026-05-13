@@ -18,7 +18,7 @@ function formatTime(seconds: number): string {
 const MODE_CONFIG = {
   idle: { label: "Idle", bg: "rgba(122,98,72,0.85)", dot: "#c9a87c" },
   focusing: { label: "Focusing", bg: "rgba(61,43,31,0.9)", dot: "#7a9e7e" },
-  break: { label: "Break", bg: "rgba(61,43,31,0.9)", dot: "#f5a623" }
+  paused: { label: "Paused", bg: "rgba(61,43,31,0.9)", dot: "#f5a623" }
 };
 
 export default function StatusRibbon({

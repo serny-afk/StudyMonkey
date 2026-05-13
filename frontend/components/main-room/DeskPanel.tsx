@@ -5,13 +5,15 @@ import type { SessionState } from "./MainRoomScreen";
 
 interface DeskPanelProps {
   session: SessionState;
-  onStart: () => void;
+  questTitle: string;
+  onQuestTitleChange: (value: string) => void;
+  onStart: (title: string, minutes: number) => void;
   onPause: () => void;
-  onStop: () => void;
-  onBreak: () => void;
+  onResume: () => void;
+  onComplete: () => void;
   onSetDuration: (minutes: number) => void;
   onClose: () => void;
-  xpEarned: number;
+  isSubmitting: boolean;
 }
 
 const DURATION_OPTIONS = [15, 25, 30, 45, 60, 90];
@@ -28,13 +30,15 @@ function getProgressPercent(remaining: number, total: number): number {
 
 export default function DeskPanel({
   session,
+  questTitle,
+  onQuestTitleChange,
   onStart,
   onPause,
-  onStop,
-  onBreak,
+  onResume,
+  onComplete,
   onSetDuration,
   onClose,
-  xpEarned
+  isSubmitting
 }: DeskPanelProps) {
   const [showDurationPicker, setShowDurationPicker] = useState(false);
   const progress = getProgressPercent(session.timeRemaining, session.sessionDuration);
@@ -82,7 +86,7 @@ export default function DeskPanel({
                   ? "Ready to focus?"
                   : session.mode === "focusing"
                     ? "Deep work mode"
-                    : "Taking a break"}
+                    : "Quest paused"}
               </p>
             </div>
             <button onClick={onClose} className="btn-ghost" style={{ padding: "4px 8px", fontSize: "16px", lineHeight: 1 }} type="button">
@@ -99,7 +103,7 @@ export default function DeskPanel({
                   cy="70"
                   r="54"
                   fill="none"
-                  stroke={session.mode === "break" ? "#7a9e7e" : "#c8773a"}
+                  stroke={session.mode === "paused" ? "#7a9e7e" : "#c8773a"}
                   strokeWidth="8"
                   strokeLinecap="round"
                   strokeDasharray={circumference}
@@ -131,17 +135,20 @@ export default function DeskPanel({
                 >
                   {sessionMinutes} MIN
                 </div>
-                {xpEarned > 0 && session.mode === "focusing" && (
+                {session.currentQuestTitle && (
                   <div
                     style={{
                       fontSize: "10px",
-                      fontWeight: 700,
-                      color: "#c8773a",
+                      fontWeight: 600,
+                      color: "var(--ink-light)",
                       fontFamily: "var(--font-sans)",
-                      marginTop: "2px"
+                      marginTop: "6px",
+                      textAlign: "center",
+                      maxWidth: "96px",
+                      lineHeight: 1.4
                     }}
                   >
-                    +{xpEarned} XP
+                    {session.currentQuestTitle}
                   </div>
                 )}
               </div>
@@ -150,6 +157,30 @@ export default function DeskPanel({
 
           {session.mode === "idle" && (
             <div className="mb-4">
+              <div style={{ marginBottom: "12px" }}>
+                <span
+                  style={{
+                    display: "block",
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: "var(--ink-light)",
+                    fontFamily: "var(--font-sans)",
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    marginBottom: "6px"
+                  }}
+                >
+                  Quest Title
+                </span>
+                <input
+                  className="input-cozy"
+                  onChange={(event) => onQuestTitleChange(event.target.value)}
+                  placeholder="What are you focusing on?"
+                  type="text"
+                  value={questTitle}
+                />
+              </div>
+
               <div className="flex items-center justify-between mb-2">
                 <span
                   style={{
@@ -228,9 +259,6 @@ export default function DeskPanel({
                   >
                     {sessionMinutes} minutes
                   </span>
-                  <span style={{ marginLeft: "auto", fontSize: "11px", color: "var(--ink-light)" }}>
-                    ~{Math.floor(sessionMinutes * 3)} XP
-                  </span>
                 </div>
               )}
             </div>
@@ -238,32 +266,40 @@ export default function DeskPanel({
 
           <div className="flex gap-2">
             {session.mode === "idle" && (
-              <button className="btn-primary flex-1" onClick={onStart} type="button">
-                Start Focus
+              <button
+                className="btn-primary flex-1"
+                onClick={() => onStart(questTitle, sessionMinutes)}
+                disabled={isSubmitting || !questTitle.trim()}
+                type="button"
+              >
+                {isSubmitting ? "Starting..." : "Start Focus"}
               </button>
             )}
 
             {session.mode === "focusing" && (
               <>
-                <button className="btn-secondary flex-1" onClick={onPause} type="button">
-                  Pause
+                <button className="btn-secondary flex-1" disabled={isSubmitting} onClick={onPause} type="button">
+                  {isSubmitting ? "Working..." : "Pause"}
                 </button>
-                <button className="btn-ghost" onClick={onBreak} style={{ color: "var(--ink)" }} type="button">
-                  Break
-                </button>
-                <button className="btn-ghost" onClick={onStop} style={{ color: "#c8403a" }} type="button">
-                  Stop
+                <button className="btn-ghost" disabled={isSubmitting} onClick={onComplete} style={{ color: "#c8403a" }} type="button">
+                  Complete
                 </button>
               </>
             )}
 
-            {session.mode === "break" && (
+            {session.mode === "paused" && (
               <>
-                <button className="btn-primary flex-1" onClick={onStart} style={{ background: "#7a9e7e" }} type="button">
-                  Resume Focus
+                <button
+                  className="btn-primary flex-1"
+                  disabled={isSubmitting}
+                  onClick={onResume}
+                  style={{ background: "#7a9e7e" }}
+                  type="button"
+                >
+                  {isSubmitting ? "Working..." : "Resume Focus"}
                 </button>
-                <button className="btn-ghost" onClick={onStop} style={{ color: "#c8403a" }} type="button">
-                  End
+                <button className="btn-ghost" disabled={isSubmitting} onClick={onComplete} style={{ color: "#c8403a" }} type="button">
+                  Complete
                 </button>
               </>
             )}
