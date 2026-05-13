@@ -38,20 +38,6 @@ const HOTSPOTS: Hotspot[] = [
     hint: "XP and stats",
     style: { right: "4.5%", top: "7.5%", width: "16.5%", height: "51%" },
     shape: "rect"
-  },
-  {
-    id: "monkey",
-    label: "Companion",
-    hint: "Check in with your monkey",
-    style: { right: "20.5%", bottom: "26.5%", width: "11%", height: "21%" },
-    shape: "ellipse"
-  },
-  {
-    id: "window",
-    label: "Window",
-    hint: "Change ambience",
-    style: { left: "5%", top: "10.5%", width: "20.5%", height: "41%" },
-    shape: "rect"
   }
 ];
 

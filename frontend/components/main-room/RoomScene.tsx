@@ -648,33 +648,19 @@ export default function RoomScene({ ambience, sessionMode }: RoomSceneProps) {
               borderRadius: "1px",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              fontSize: "13px",
-              color: "#6b8e3d"
+              justifyContent: "center"
             }}
           >
-            leaf
+            <div
+              style={{
+                width: "24px",
+                height: "24px",
+                borderRadius: "50% 50% 50% 0",
+                transform: "rotate(-20deg)",
+                background: "linear-gradient(135deg, #7a9e4e, #4e8e6b)"
+              }}
+            />
           </div>
-        </div>
-      </div>
-
-      <div className="absolute animate-sway" style={{ left: "20%", top: "5%", width: "5%", maxWidth: "60px" }}>
-        <div style={{ width: "1px", height: "30px", background: "#6b4c35", margin: "0 auto" }} />
-        <div
-          style={{
-            width: "40px",
-            height: "30px",
-            background: "linear-gradient(180deg, #4e8e4e, #3a6e3a)",
-            borderRadius: "4px 4px 8px 8px",
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "13px",
-            color: "#dff1d2"
-          }}
-        >
-          leaf
         </div>
       </div>
 

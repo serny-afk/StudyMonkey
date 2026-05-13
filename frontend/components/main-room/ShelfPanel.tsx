@@ -8,9 +8,6 @@ interface ShelfPanelProps {
   xp: number;
   level: number;
   xpProgress: number;
-  streak: number;
-  todayFocusMinutes: number;
-  sessionsToday: number;
   onClose: () => void;
 }
 
@@ -18,9 +15,6 @@ export default function ShelfPanel({
   xp,
   level,
   xpProgress,
-  streak,
-  todayFocusMinutes,
-  sessionsToday,
   onClose
 }: ShelfPanelProps) {
   const xpInLevel = xp % 500;
@@ -70,21 +64,30 @@ export default function ShelfPanel({
             </div>
           </div>
 
-          <div className="grid gap-2 mb-4" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-            <div style={{ textAlign: "center", padding: "8px 4px", background: "rgba(61,43,31,0.03)", borderRadius: "6px", border: "1px solid rgba(61,43,31,0.07)" }}>
-              <div style={{ fontSize: "13px", fontWeight: 700, color: "#f5a623", fontFamily: "var(--font-sans)" }}>{streak}</div>
-              <div style={{ fontSize: "9px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>Streak</div>
-            </div>
-            <div style={{ textAlign: "center", padding: "8px 4px", background: "rgba(61,43,31,0.03)", borderRadius: "6px", border: "1px solid rgba(61,43,31,0.07)" }}>
-              <div style={{ fontSize: "13px", fontWeight: 700, color: "#7a9e7e", fontFamily: "var(--font-sans)" }}>
-                {Math.floor(todayFocusMinutes / 60)}h {todayFocusMinutes % 60}m
-              </div>
-              <div style={{ fontSize: "9px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>Today</div>
-            </div>
-            <div style={{ textAlign: "center", padding: "8px 4px", background: "rgba(61,43,31,0.03)", borderRadius: "6px", border: "1px solid rgba(61,43,31,0.07)" }}>
-              <div style={{ fontSize: "13px", fontWeight: 700, color: "#c8773a", fontFamily: "var(--font-sans)" }}>{sessionsToday}</div>
-              <div style={{ fontSize: "9px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>Sessions</div>
-            </div>
+          <div
+            style={{
+              padding: "12px",
+              background: "rgba(61,43,31,0.03)",
+              borderRadius: "8px",
+              border: "1px solid rgba(61,43,31,0.07)"
+            }}
+          >
+            <p
+              style={{
+                fontSize: "10px",
+                fontWeight: 600,
+                color: "var(--ink-light)",
+                fontFamily: "var(--font-sans)",
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                marginBottom: "6px"
+              }}
+            >
+              MVP Scope
+            </p>
+            <p style={{ fontSize: "12px", color: "var(--ink)", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
+              This panel currently shows only character progression data that maps cleanly to the backend: level progress and total XP.
+            </p>
           </div>
         </div>
       </div>

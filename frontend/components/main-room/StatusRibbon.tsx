@@ -7,7 +7,6 @@ interface StatusRibbonProps {
   level: number;
   xp: number;
   xpProgress: number;
-  streak: number;
 }
 
 function formatTime(seconds: number): string {
@@ -26,12 +25,9 @@ export default function StatusRibbon({
   session,
   level,
   xp,
-  xpProgress,
-  streak
+  xpProgress
 }: StatusRibbonProps) {
   const modeConfig = MODE_CONFIG[session.mode];
-  const todayHours = Math.floor(session.todayFocusMinutes / 60);
-  const todayMins = session.todayFocusMinutes % 60;
 
   return (
     <div
@@ -119,44 +115,9 @@ export default function StatusRibbon({
           </div>
         )}
 
-        <div
-          className="flex items-center gap-1 px-2 py-1 rounded-full"
-          style={{
-            background: "rgba(253,246,227,0.12)",
-            border: "1px solid rgba(253,246,227,0.15)"
-          }}
-        >
-          <span style={{ fontSize: "11px" }}>Focus</span>
-          <span
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "11px",
-              fontWeight: 500,
-              color: "rgba(253,246,227,0.9)"
-            }}
-          >
-            {todayHours > 0 ? `${todayHours}h ` : ""}
-            {todayMins}m today
-          </span>
-        </div>
       </div>
 
       <div className="flex items-center gap-3" style={{ pointerEvents: "auto" }}>
-        <div className="flex items-center gap-1">
-          <span style={{ fontSize: "14px" }}>Streak</span>
-          <span
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "13px",
-              fontWeight: 700,
-              color: "#f5a623",
-              textShadow: "0 1px 3px rgba(61,43,31,0.4)"
-            }}
-          >
-            {streak}
-          </span>
-        </div>
-
         <div className="flex flex-col items-end gap-0.5">
           <div className="flex items-center gap-1.5">
             <span

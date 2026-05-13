@@ -5,13 +5,11 @@ import { Toaster, toast } from "sonner";
 import CorkBoardPanel from "./CorkBoardPanel";
 import DeskPanel from "./DeskPanel";
 import HotspotOverlay from "./HotspotOverlay";
-import MonkeyPanel from "./MonkeyPanel";
 import RoomScene from "./RoomScene";
 import ShelfPanel from "./ShelfPanel";
 import StatusRibbon from "./StatusRibbon";
-import WindowPanel from "./WindowPanel";
 
-export type HotspotId = "desk" | "corkboard" | "shelf" | "monkey" | "window" | null;
+export type HotspotId = "desk" | "corkboard" | "shelf" | null;
 export type SessionMode = "idle" | "focusing" | "break";
 
 export interface Quest {
@@ -42,11 +40,6 @@ export default function MainRoomScreen() {
   const [quests, setQuests] = useState<Quest[]>(INITIAL_QUESTS);
   const [xp, setXp] = useState(2340);
   const [level] = useState(7);
-  const [streak] = useState(12);
-  const [ambience, setAmbience] = useState<"day" | "evening" | "night" | "rain">("evening");
-  const [ambienceSound, setAmbienceSound] = useState("fireplace");
-  const [isSoundOn, setIsSoundOn] = useState(false);
-  const [companionMood, setCompanionMood] = useState<"happy" | "focused" | "sleepy" | "excited">("happy");
   const [session, setSession] = useState<SessionState>({
     mode: "idle",
     timeRemaining: 25 * 60,
@@ -62,13 +55,11 @@ export default function MainRoomScreen() {
 
   const startSession = useCallback(() => {
     setSession((prev) => ({ ...prev, mode: "focusing" }));
-    setCompanionMood("focused");
     toast.success("Focus session started.");
   }, []);
 
   const pauseSession = useCallback(() => {
     setSession((prev) => ({ ...prev, mode: "idle" }));
-    setCompanionMood("happy");
     toast("Session paused.");
   }, []);
 
@@ -84,7 +75,6 @@ export default function MainRoomScreen() {
       todayFocusMinutes: prev.todayFocusMinutes + minutesFocused,
       sessionsToday: prev.sessionsToday + 1
     }));
-    setCompanionMood("excited");
     if (earnedXp > 0) toast.success(`+${earnedXp} XP earned.`);
   }, [session.sessionDuration, session.timeRemaining]);
 
@@ -96,7 +86,6 @@ export default function MainRoomScreen() {
       timeRemaining: 5 * 60,
       sessionDuration: 5 * 60
     }));
-    setCompanionMood("sleepy");
     toast("Break time.");
   }, []);
 
@@ -123,7 +112,6 @@ export default function MainRoomScreen() {
               const minutesFocused = Math.floor(prev.sessionDuration / 60);
               const earnedXp = minutesFocused * 3;
               setXp((value) => value + earnedXp);
-              setCompanionMood("excited");
               toast.success(`Session complete. +${earnedXp} XP`);
               return {
                 ...prev,
@@ -186,9 +174,9 @@ export default function MainRoomScreen() {
         }}
       />
 
-      <RoomScene ambience={ambience} sessionMode={session.mode} />
+      <RoomScene ambience="evening" sessionMode={session.mode} />
 
-      <StatusRibbon session={session} level={level} xp={xp} xpProgress={xpProgress} streak={streak} />
+      <StatusRibbon session={session} level={level} xp={xp} xpProgress={xpProgress} />
 
       <HotspotOverlay activeHotspot={activeHotspot} onHotspotClick={handleHotspotClick} sessionMode={session.mode} />
 
@@ -214,25 +202,6 @@ export default function MainRoomScreen() {
           xp={xp}
           level={level}
           xpProgress={xpProgress}
-          streak={streak}
-          todayFocusMinutes={session.todayFocusMinutes}
-          sessionsToday={session.sessionsToday}
-          onClose={closePanel}
-        />
-      )}
-
-      {activeHotspot === "monkey" && (
-        <MonkeyPanel mood={companionMood} streak={streak} level={level} sessionMode={session.mode} onClose={closePanel} />
-      )}
-
-      {activeHotspot === "window" && (
-        <WindowPanel
-          ambience={ambience}
-          ambienceSound={ambienceSound}
-          isSoundOn={isSoundOn}
-          onSetAmbience={setAmbience}
-          onSetSound={setAmbienceSound}
-          onToggleSound={() => setIsSoundOn((s) => !s)}
           onClose={closePanel}
         />
       )}
