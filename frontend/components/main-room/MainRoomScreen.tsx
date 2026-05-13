@@ -68,6 +68,7 @@ export default function MainRoomScreen() {
     quests.find((quest) => quest.status === "active") ??
     quests.find((quest) => quest.status === "paused") ??
     null;
+  const hasInProgressQuest = activeQuest !== null;
 
   const session = deriveSessionState(activeQuest, now, plannedMinutes);
   const xp = character?.xp ?? 0;
@@ -85,8 +86,17 @@ export default function MainRoomScreen() {
     setQuests(nextQuests);
   }, []);
 
+  const clearClientSession = useCallback(() => {
+    localStorage.removeItem(TOKEN_KEY);
+    setToken(null);
+    setCharacter(null);
+    setQuests([]);
+    setActiveHotspot(null);
+  }, []);
+
   const handleAuthSubmit = useCallback(
     async (mode: "login" | "register", email: string, password: string) => {
+      setIsMutating(true);
       try {
         const response: AuthResponse =
           mode === "login" ? await api.login(email, password) : await api.register(email, password);
@@ -99,6 +109,8 @@ export default function MainRoomScreen() {
         toast.success(mode === "login" ? "Signed in." : "Account created.");
       } catch (error) {
         toast.error(error instanceof Error ? error.message : "Authentication failed.");
+      } finally {
+        setIsMutating(false);
       }
     },
     [loadData]
@@ -114,12 +126,11 @@ export default function MainRoomScreen() {
     setToken(savedToken);
     loadData(savedToken)
       .catch(() => {
-        localStorage.removeItem(TOKEN_KEY);
-        setToken(null);
+        clearClientSession();
         toast.error("Your session expired. Please sign in again.");
       })
       .finally(() => setIsBootstrapping(false));
-  }, [loadData]);
+  }, [clearClientSession, loadData]);
 
   useEffect(() => {
     if (session.mode !== "focusing") {
@@ -232,6 +243,7 @@ export default function MainRoomScreen() {
           session={session}
           questTitle={questTitle}
           onQuestTitleChange={setQuestTitle}
+          hasInProgressQuest={hasInProgressQuest}
           onStart={createAndStartQuest}
           onPause={pauseQuest}
           onResume={resumeQuest}

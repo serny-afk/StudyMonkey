@@ -7,6 +7,7 @@ interface DeskPanelProps {
   session: SessionState;
   questTitle: string;
   onQuestTitleChange: (value: string) => void;
+  hasInProgressQuest: boolean;
   onStart: (title: string, minutes: number) => void;
   onPause: () => void;
   onResume: () => void;
@@ -32,6 +33,7 @@ export default function DeskPanel({
   session,
   questTitle,
   onQuestTitleChange,
+  hasInProgressQuest,
   onStart,
   onPause,
   onResume,
@@ -157,6 +159,23 @@ export default function DeskPanel({
 
           {session.mode === "idle" && (
             <div className="mb-4">
+              {hasInProgressQuest && (
+                <div
+                  style={{
+                    marginBottom: "12px",
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    background: "rgba(200,119,58,0.08)",
+                    border: "1px solid rgba(200,119,58,0.18)",
+                    color: "var(--ink)",
+                    fontSize: "12px",
+                    lineHeight: 1.5
+                  }}
+                >
+                  You already have an in-progress quest. Resume or complete it before starting a new one.
+                </div>
+              )}
+
               <div style={{ marginBottom: "12px" }}>
                 <span
                   style={{
@@ -269,7 +288,7 @@ export default function DeskPanel({
               <button
                 className="btn-primary flex-1"
                 onClick={() => onStart(questTitle, sessionMinutes)}
-                disabled={isSubmitting || !questTitle.trim()}
+                disabled={isSubmitting || !questTitle.trim() || hasInProgressQuest}
                 type="button"
               >
                 {isSubmitting ? "Starting..." : "Start Focus"}

@@ -53,6 +53,7 @@ export default function AuthPanel({ onSubmit, isSubmitting }: AuthPanelProps) {
         <div className="flex gap-1 mb-14" style={{ background: "var(--parchment-dark)", borderRadius: "8px", padding: "4px" }}>
           <button
             onClick={() => setMode("login")}
+            disabled={isSubmitting}
             type="button"
             style={{
               flex: 1,
@@ -69,6 +70,7 @@ export default function AuthPanel({ onSubmit, isSubmitting }: AuthPanelProps) {
           </button>
           <button
             onClick={() => setMode("register")}
+            disabled={isSubmitting}
             type="button"
             style={{
               flex: 1,
@@ -98,6 +100,7 @@ export default function AuthPanel({ onSubmit, isSubmitting }: AuthPanelProps) {
             onChange={(event) => setEmail(event.target.value)}
             placeholder="Email"
             className="input-cozy"
+            disabled={isSubmitting}
             required
           />
           <input
@@ -106,6 +109,7 @@ export default function AuthPanel({ onSubmit, isSubmitting }: AuthPanelProps) {
             onChange={(event) => setPassword(event.target.value)}
             placeholder="Password"
             className="input-cozy"
+            disabled={isSubmitting}
             required
             minLength={6}
           />

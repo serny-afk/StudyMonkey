@@ -12,6 +12,32 @@ import { CompleteQuestResult, QuestSessionRecord } from './quests.types';
 export class QuestsService {
   constructor(private readonly databaseService: DatabaseService) {}
 
+  private async ensureNoOtherInProgressQuest(
+    userId: string,
+    excludedQuestId?: string,
+  ): Promise<void> {
+    const params = excludedQuestId ? [userId, excludedQuestId] : [userId];
+    const exclusionClause = excludedQuestId ? 'AND id <> $2' : '';
+
+    const result = await this.databaseService.query<{ id: string }>(
+      `
+        SELECT id
+        FROM quest_sessions
+        WHERE user_id = $1
+          AND status IN ('active', 'paused')
+          ${exclusionClause}
+        LIMIT 1
+      `,
+      params,
+    );
+
+    if (result.rows[0]) {
+      throw new ConflictException(
+        'You already have an in-progress quest. Complete or pause that flow before starting another.',
+      );
+    }
+  }
+
   async getQuestsForUser(userId: string): Promise<QuestSessionRecord[]> {
     const result = await this.databaseService.query<QuestSessionRecord>(
       `
@@ -81,6 +107,8 @@ export class QuestsService {
     if (quest.status !== 'created') {
       throw new ConflictException('Only created quests can be started.');
     }
+
+    await this.ensureNoOtherInProgressQuest(userId, questId);
 
     const result = await this.databaseService.query<QuestSessionRecord>(
       `
@@ -168,6 +196,8 @@ export class QuestsService {
     if (quest.status !== 'paused') {
       throw new ConflictException('Only paused quests can be resumed.');
     }
+
+    await this.ensureNoOtherInProgressQuest(userId, questId);
 
     const result = await this.databaseService.query<QuestSessionRecord>(
       `
