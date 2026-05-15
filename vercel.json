@@ -11,7 +11,10 @@
       "routePrefix": "/api",
       "framework": "nestjs",
       "includeFiles": [
-        "backend/node_modules/pg/**"
+        "backend/node_modules/pg*/**",
+        "backend/node_modules/postgres-*/**",
+        "backend/node_modules/split2/**",
+        "backend/node_modules/xtend/**"
       ]
     }
   }
