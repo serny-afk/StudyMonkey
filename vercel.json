@@ -7,9 +7,12 @@
       "framework": "nextjs"
     },
     "backend": {
-      "entrypoint": "backend",
+      "entrypoint": "backend/src/main.ts",
       "routePrefix": "/api",
-      "framework": "nestjs"
+      "framework": "nestjs",
+      "includeFiles": [
+        "backend/node_modules/pg/**"
+      ]
     }
   }
 }
