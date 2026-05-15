@@ -42,7 +42,8 @@ export type CompleteQuestResult = {
 };
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:3001";
+  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ??
+  (process.env.NODE_ENV === "production" ? "/api" : "http://localhost:3001");
 
 type RequestOptions = {
   method?: "GET" | "POST";
