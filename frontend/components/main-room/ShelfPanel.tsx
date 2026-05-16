@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import PanelShell from "./PanelShell";
 
 const XPRadialChart = dynamic(() => import("./XPRadialChart"), { ssr: false });
 
@@ -21,7 +22,7 @@ export default function ShelfPanel({
   const xpToNext = 500 - xpInLevel;
 
   return (
-    <div className="absolute overlay-enter" style={{ right: "22%", top: "8%", zIndex: 50, width: "300px" }}>
+    <PanelShell placement="right" width="min(300px, calc(100vw - 24px))">
       <div className="surface-parchment shadow-paper-lg" style={{ borderRadius: "8px", border: "1.5px solid var(--border)", position: "relative" }}>
         <div style={{ padding: "20px 18px 18px" }}>
           <div className="flex items-start justify-between mb-4">
@@ -91,6 +92,6 @@ export default function ShelfPanel({
           </div>
         </div>
       </div>
-    </div>
+    </PanelShell>
   );
 }

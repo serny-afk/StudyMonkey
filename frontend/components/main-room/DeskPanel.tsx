@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { SessionState } from "./MainRoomScreen";
+import PanelShell from "./PanelShell";
 
 interface DeskPanelProps {
   session: SessionState;
@@ -49,16 +50,7 @@ export default function DeskPanel({
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
-    <div
-      className="absolute overlay-enter"
-      style={{
-        right: "clamp(12px, 4vw, 32px)",
-        top: "clamp(12px, 4vh, 32px)",
-        zIndex: 50,
-        width: "min(320px, calc(100vw - 24px))",
-        maxHeight: "calc(100vh - 24px)"
-      }}
-    >
+    <PanelShell placement="right">
       <div
         className="surface-parchment shadow-paper-lg"
         style={{
@@ -327,6 +319,6 @@ export default function DeskPanel({
           </div>
         </div>
       </div>
-    </div>
+    </PanelShell>
   );
 }

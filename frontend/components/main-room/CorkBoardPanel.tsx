@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { QuestSessionRecord } from "../../lib/api";
+import PanelShell from "./PanelShell";
 
 interface CorkBoardPanelProps {
   quests: QuestSessionRecord[];
@@ -24,15 +25,10 @@ export default function CorkBoardPanel({ quests, onClose }: CorkBoardPanelProps)
   const totalCount = quests.length;
 
   return (
-    <div
-      className="absolute overlay-enter"
-      style={{
-        left: "24%",
-        top: "14%",
-        zIndex: 50,
-        width: "300px",
-        transform: "translateX(-5%) rotate(-1deg)"
-      }}
+    <PanelShell
+      placement="left"
+      width="min(300px, calc(100vw - 24px))"
+      style={{ transform: "rotate(-1deg)" }}
     >
       <div className="surface-cork shadow-paper-lg" style={{ borderRadius: "6px", border: "6px solid #8b6340", padding: "16px" }}>
         <div className="surface-parchment shadow-paper" style={{ borderRadius: "3px", padding: "16px", transform: "rotate(0.5deg)" }}>
@@ -161,6 +157,6 @@ export default function CorkBoardPanel({ quests, onClose }: CorkBoardPanelProps)
           </div>
         </div>
       </div>
-    </div>
+    </PanelShell>
   );
 }
