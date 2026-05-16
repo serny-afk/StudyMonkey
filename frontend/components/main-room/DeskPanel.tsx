@@ -52,11 +52,12 @@ export default function DeskPanel({
     <div
       className="absolute overlay-enter"
       style={{
-        left: "50%",
+        right: "clamp(12px, 4vw, 32px)",
         top: "50%",
-        transform: "translate(-20%, -60%)",
+        transform: "translateY(-50%)",
         zIndex: 50,
-        width: "320px"
+        width: "min(320px, calc(100vw - 24px))",
+        maxHeight: "calc(100vh - 24px)"
       }}
     >
       <div
@@ -64,7 +65,9 @@ export default function DeskPanel({
         style={{
           borderRadius: "4px 12px 12px 4px",
           border: "1.5px solid var(--border)",
-          position: "relative"
+          position: "relative",
+          maxHeight: "calc(100vh - 24px)",
+          overflowY: "auto"
         }}
       >
         <div style={{ padding: "24px 20px 20px" }}>
