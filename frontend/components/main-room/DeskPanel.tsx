@@ -54,9 +54,9 @@ export default function DeskPanel({
       style={{
         right: "clamp(12px, 4vw, 32px)",
         top: "clamp(12px, 4vh, 32px)",
-        bottom: "clamp(12px, 4vh, 32px)",
         zIndex: 50,
-        width: "min(320px, calc(100vw - 24px))"
+        width: "min(320px, calc(100vw - 24px))",
+        maxHeight: "calc(100vh - 24px)"
       }}
     >
       <div
@@ -65,7 +65,7 @@ export default function DeskPanel({
           borderRadius: "4px 12px 12px 4px",
           border: "1.5px solid var(--border)",
           position: "relative",
-          height: "100%",
+          maxHeight: "calc(100vh - 24px)",
           overflowY: "auto"
         }}
       >
