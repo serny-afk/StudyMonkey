@@ -1,162 +1,218 @@
 # StudyMonkey
 
-## Project Overview
+StudyMonkey is a backend-driven Pomodoro study app where users complete timed study quests, earn XP, and level up a persistent character.
 
-A Pomodoro-based study system where users complete timed study sessions (“quests”) to earn XP and level up a persistent character (monkey avatar). The system focuses on backend engineering: authentication, session tracking, and progression logic, with a minimal frontend for interaction (Postman initially, upgradeable to a UI later).
+The project was built primarily as a backend engineering exercise, then connected to a room-based frontend so the full loop could run as a real deployed product.
 
----
+## Current MVP
 
-# Objectives
+The MVP currently supports:
 
-- RESTful API design
-- Backend system design (layered architecture)
-- Database design (PostgreSQL)
-- Authentication & authorization (JWT-based)
-- Time-based state tracking (Pomodoro sessions)
-- Business logic design (XP + progression system)
+- user registration
+- user login
+- JWT-protected API routes
+- persistent character XP and level
+- quest creation
+- quest start / pause / resume / complete
+- backend-owned duration tracking
+- backend-owned XP calculation
+- quest history retrieval
+- deployed frontend and backend under one public site
 
----
+## Tech Stack
 
-# Tech Stack
+### Backend
 
-## Backend
-- Node.js + NestJS (TypeScript)
+- NestJS
+- TypeScript
+- PostgreSQL via `pg`
+- JWT authentication
+- bcrypt password hashing
 
-## Database
-- PostgreSQL (Supabase)
+### Frontend
 
-## Frontend
-- Next.js (React)
-- Initial interaction via Postman (no frontend dependency for MVP)
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
 
-## Hosting
-- Backend: Render / Railway
+### Database
+
+- Supabase Postgres
+
+### Hosting
+
 - Frontend: Vercel
+- Backend: Vercel
 
-## Optional
-- Redis (caching, not required for MVP)
+Redis is **not** part of the current MVP.
 
----
+## Architecture
 
-# Architecture
+At a high level, the system looks like this:
 
-Client-server layered architecture: Client (Postman / Next.js UI)
-↓
-Controller (API Layer)
-↓
-Service (Business Logic Layer)
-↓
-Repository (Data Access Layer)
-↓
-Database (PostgreSQL)
+```text
+Browser UI (Next.js room frontend)
+        ↓
+NestJS API
+        ↓
+PostgreSQL (Supabase)
+```
 
+The core design principle is:
 
-### Layer responsibilities:
-- **Controller** → handles HTTP requests/responses
-- **Service** → core logic (session handling, XP calculation)
-- **Repository** → database queries only
-- **Database** → persistent storage
+- backend owns truth
+- database owns persistence
+- frontend owns presentation and user interaction
 
----
+## Repo Layout
 
-# Core Concept Model
+```text
+StudyMonkey/
+  backend/      NestJS API
+  frontend/     Next.js client
+  docs/         learning guide, MVP notes, postmortem, roadmap
+```
 
-## User = Character
-Each user has a persistent character with progression stats:
-- XP
-- Level
-- (Optional) streak / consistency metrics
+## Local Development
 
----
+### Backend
 
-## Quest = Pomodoro Session
-A quest represents a timed study session:
-- 30 / 45 / 60 minutes
-- Has lifecycle (created → started → completed)
-- Tracks actual study duration
+From [backend](/C:/Users/Administrator/Desktop/School/Y2S2/summer/StudyMonkey/backend):
 
----
+```powershell
+npm install
+npm run start:dev
+```
 
-## Progression System
-- Completing quests grants XP
-- XP determines level progression
-- All progression is persistent per user
+Expected local backend port:
 
----
+- `3001`
 
-# User Experience (Backend-driven behavior)
+### Frontend
 
-1. User registers and logs in (JWT authentication)
-2. User creates or accesses their character
-3. User starts a quest (study session timer begins)
-4. User pauses/resumes or completes the session
-5. System calculates actual completed study time
-6. XP is awarded based on session completion
-7. User level and XP are updated and persisted
-8. User can retrieve progress at any time
+From [frontend](/C:/Users/Administrator/Desktop/School/Y2S2/summer/StudyMonkey/frontend):
 
----
+```powershell
+npm install
+npm run dev
+```
 
-# API Scope (High-Level)
+Expected local frontend port:
 
-## Authentication
-- Register user
-- Login user
+- `3000`
 
-## Character / User Progress
-- Get character stats (XP, level)
+### Local Env
 
-## Quests (Pomodoro sessions)
-- Create quest
-- Start quest
-- Pause / resume quest (optional)
-- Complete quest
-- Get quest history
+Backend env values live in:
 
----
+- [backend/.env](/C:/Users/Administrator/Desktop/School/Y2S2/summer/StudyMonkey/backend/.env)
 
-# Data Model (High-Level)
+Important backend env vars:
 
-- **User**
-  - id
-  - email
-  - password
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `JWT_EXPIRES_IN`
+- `NODE_ENV`
+- `PORT`
 
-- **Character (Progress)**
-  - user_id
-  - xp
-  - level
+The frontend currently defaults to:
 
-- **QuestSession**
-  - id
-  - user_id
-  - title
-  - planned_duration
-  - actual_duration
-  - status (active/completed/paused)
-  - timestamps (start/end)
+- `http://localhost:3001` in development
+- `/api` in production
 
----
+## Deployment
 
-# Frontend Strategy
+The app is currently deployed on Vercel using a single project with services routing configured in [vercel.json](/C:/Users/Administrator/Desktop/School/Y2S2/summer/StudyMonkey/vercel.json).
 
-- Phase 1: Postman (API testing only)
-- Phase 2: Next.js UI (minimal interface)
-- Phase 3 (optional): gamified UI with avatar + animations
+Current deployed shape:
 
-Frontend is strictly a **presentation layer**, not responsible for business logic.
+- frontend service mounted at `/`
+- backend service mounted at `/api`
 
----
+That means the public site behaves like one website even though the frontend and backend are still separate services internally.
 
-# Key Design Principles
+### Required Production Env Vars
 
-- Backend is source of truth for all progression data
-- All XP/level calculations happen server-side
-- Session timing is validated by backend
-- Frontend only displays state and triggers actions
+Set these in Vercel:
 
----
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `JWT_EXPIRES_IN`
+- `NODE_ENV=production`
 
-# Final Summary
+### Important Deployment Note
 
-A backend-driven Pomodoro study system where authenticated users complete timed study sessions (“quests”) that generate XP, level progression, and persistent character growth, supported by a clean layered architecture and RESTful API design.
+The current [vercel.json](/C:/Users/Administrator/Desktop/School/Y2S2/summer/StudyMonkey/vercel.json) includes:
+
+- `backend/node_modules/**`
+
+for the backend service bundle.
+
+This is a practical MVP fix for Vercel Services packaging issues encountered during deployment. It works, but it is broader than an ideal long-term bundle configuration.
+
+## Main Product Flow
+
+1. user registers or logs in
+2. user creates a quest
+3. user starts the quest
+4. user pauses/resumes or completes it
+5. backend calculates actual duration
+6. backend awards XP and updates level
+7. frontend reloads and displays the updated state
+
+## API Surface
+
+### Auth
+
+- `POST /auth/register`
+- `POST /auth/login`
+- `GET /auth/me`
+
+### Character
+
+- `GET /character/me`
+
+### Quests
+
+- `GET /quests`
+- `GET /quests/:id`
+- `POST /quests`
+- `POST /quests/:id/start`
+- `POST /quests/:id/pause`
+- `POST /quests/:id/resume`
+- `POST /quests/:id/complete`
+
+### Health
+
+- `GET /health`
+
+## Important Business Rules
+
+- backend is the source of truth for XP and progression
+- quest duration is derived from backend timestamps, not trusted from the client
+- quest state transitions are validated on the backend
+- only one in-progress quest is allowed per user
+- frontend displays backend state instead of inventing its own progression
+
+## Documentation
+
+If you want the guided explanation of the codebase, start here:
+
+- [docs/learning-guide.md](/C:/Users/Administrator/Desktop/School/Y2S2/summer/StudyMonkey/docs/learning-guide.md)
+
+Project planning and reflection docs:
+
+- [docs/mvp.md](/C:/Users/Administrator/Desktop/School/Y2S2/summer/StudyMonkey/docs/mvp.md)
+- [docs/postmortem.md](/C:/Users/Administrator/Desktop/School/Y2S2/summer/StudyMonkey/docs/postmortem.md)
+- [docs/v2-roadmap.md](/C:/Users/Administrator/Desktop/School/Y2S2/summer/StudyMonkey/docs/v2-roadmap.md)
+
+## Current Status
+
+StudyMonkey is past the prototype stage and into a deployed MVP stage.
+
+The current priority is:
+
+- stabilize the existing product loop
+- clean up documentation and UX rough edges
+- make the codebase easier to extend for the next iteration
