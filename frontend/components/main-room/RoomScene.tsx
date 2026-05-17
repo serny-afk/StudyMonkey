@@ -459,22 +459,7 @@ export default function RoomScene({ ambience, sessionMode }: RoomSceneProps) {
                 clipPath: "polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%)",
                 position: "relative"
               }}
-            >
-              {sessionMode === "focusing" && (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "-30px",
-                    left: "-20px",
-                    right: "-20px",
-                    height: "40px",
-                    background:
-                      "radial-gradient(ellipse at 50% 0%, rgba(245,166,35,0.3), transparent 70%)",
-                    pointerEvents: "none"
-                  }}
-                />
-              )}
-            </div>
+            />
             <div style={{ width: "4px", height: "28px", background: "#5a3a20", margin: "0 auto" }} />
             <div style={{ width: "16px", height: "4px", background: "#5a3a20", margin: "0 auto" }} />
           </div>
