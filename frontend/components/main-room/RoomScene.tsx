@@ -452,7 +452,6 @@ export default function RoomScene({ ambience, sessionMode }: RoomSceneProps) {
 
           <div className="relative" style={{ width: "28px", flexShrink: 0 }}>
             <div
-              className={sessionMode === "focusing" ? "animate-flicker" : ""}
               style={{
                 width: "28px",
                 height: "20px",

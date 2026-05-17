@@ -11,6 +11,7 @@ export default function AuthPanel({ onSubmit, isSubmitting }: AuthPanelProps) {
   const [mode, setMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const minimumPasswordLength = 8;
 
   return (
     <div
@@ -18,7 +19,7 @@ export default function AuthPanel({ onSubmit, isSubmitting }: AuthPanelProps) {
       style={{
         left: "50%",
         top: "50%",
-        width: "340px",
+        width: "min(340px, calc(100vw - 24px))",
         transform: "translate(-50%, -50%)"
       }}
     >
@@ -50,7 +51,7 @@ export default function AuthPanel({ onSubmit, isSubmitting }: AuthPanelProps) {
           Sign in or create an account to load your real quests, character XP, and session progress from the backend.
         </p>
 
-        <div className="flex gap-1 mb-14" style={{ background: "var(--parchment-dark)", borderRadius: "8px", padding: "4px" }}>
+        <div className="flex gap-1 mb-4" style={{ background: "var(--parchment-dark)", borderRadius: "8px", padding: "4px" }}>
           <button
             onClick={() => setMode("login")}
             disabled={isSubmitting}
@@ -88,7 +89,7 @@ export default function AuthPanel({ onSubmit, isSubmitting }: AuthPanelProps) {
         </div>
 
         <form
-          className="grid gap-10"
+          className="grid gap-4"
           onSubmit={async (event) => {
             event.preventDefault();
             await onSubmit(mode, email, password);
@@ -111,8 +112,19 @@ export default function AuthPanel({ onSubmit, isSubmitting }: AuthPanelProps) {
             className="input-cozy"
             disabled={isSubmitting}
             required
-            minLength={6}
+            minLength={minimumPasswordLength}
           />
+          <p
+            style={{
+              marginTop: "-6px",
+              fontSize: "11px",
+              lineHeight: 1.5,
+              color: "var(--ink-light)",
+              fontFamily: "var(--font-sans)"
+            }}
+          >
+            Passwords must be at least {minimumPasswordLength} characters.
+          </p>
           <button className="btn-primary" disabled={isSubmitting} type="submit">
             {isSubmitting ? "Working..." : mode === "login" ? "Sign In" : "Create Account"}
           </button>

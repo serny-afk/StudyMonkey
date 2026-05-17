@@ -109,7 +109,7 @@ export default function DeskPanel({
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <div
-                  className={session.mode === "focusing" ? "font-display timer-pulse" : "font-display"}
+                  className="font-display"
                   style={{
                     fontSize: "28px",
                     fontWeight: 700,
