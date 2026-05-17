@@ -1,6 +1,6 @@
 "use client";
 
-import type { SessionState } from "./MainRoomScreen";
+import type { SessionState } from "./room-types";
 
 interface StatusRibbonProps {
   session: SessionState;

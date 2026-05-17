@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { HotspotId, SessionMode } from "./MainRoomScreen";
+import type { HotspotId, SessionMode } from "./room-types";
 
 interface HotspotOverlayProps {
   activeHotspot: HotspotId;

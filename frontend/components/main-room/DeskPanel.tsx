@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { SessionState } from "./MainRoomScreen";
 import PanelShell from "./PanelShell";
+import type { SessionState } from "./room-types";
 
 interface DeskPanelProps {
   session: SessionState;

@@ -1,6 +1,6 @@
 "use client";
 
-import type { SessionMode } from "./MainRoomScreen";
+import type { SessionMode } from "./room-types";
 
 interface RoomSceneProps {
   ambience: "day" | "evening" | "night" | "rain";
