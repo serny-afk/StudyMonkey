@@ -21,6 +21,13 @@ export interface SessionState {
   currentQuestTitle: string | null;
 }
 
+type RoomStatusNoticeProps = {
+  title: string;
+  body: string;
+  actionLabel?: string;
+  onAction?: () => void;
+};
+
 const TOKEN_KEY = "studymonkey_access_token";
 
 function deriveSessionState(
@@ -52,6 +59,52 @@ function deriveSessionState(
   };
 }
 
+function RoomStatusNotice({ title, body, actionLabel, onAction }: RoomStatusNoticeProps) {
+  return (
+    <div
+      className="absolute z-50"
+      style={{
+        left: "50%",
+        top: "50%",
+        width: "min(360px, calc(100vw - 32px))",
+        transform: "translate(-50%, -50%)"
+      }}
+    >
+      <div
+        className="surface-parchment shadow-paper-lg"
+        style={{
+          borderRadius: "12px",
+          border: "1.5px solid var(--border)",
+          padding: "20px 18px"
+        }}
+      >
+        <p
+          style={{
+            fontSize: "10px",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--ink-light)",
+            fontFamily: "var(--font-sans)",
+            marginBottom: "8px"
+          }}
+        >
+          Room Status
+        </p>
+        <h2 className="font-display" style={{ fontSize: "21px", color: "var(--ink)", marginBottom: "8px" }}>
+          {title}
+        </h2>
+        <p style={{ fontSize: "12px", lineHeight: 1.6, color: "var(--ink-light)" }}>{body}</p>
+        {actionLabel && onAction && (
+          <button className="btn-primary" onClick={onAction} style={{ marginTop: "16px", width: "100%" }} type="button">
+            {actionLabel}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function MainRoomScreen() {
   const [activeHotspot, setActiveHotspot] = useState<HotspotId>(null);
   const [questTitle, setQuestTitle] = useState("Focus Session");
@@ -60,7 +113,9 @@ export default function MainRoomScreen() {
   const [character, setCharacter] = useState<CharacterRecord | null>(null);
   const [quests, setQuests] = useState<QuestSessionRecord[]>([]);
   const [isBootstrapping, setIsBootstrapping] = useState(true);
+  const [isLoadingData, setIsLoadingData] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
+  const [dataError, setDataError] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -78,12 +133,23 @@ export default function MainRoomScreen() {
   const xpProgress = (xpInCurrentLevel / XP_PER_LEVEL) * 100;
 
   const loadData = useCallback(async (accessToken: string) => {
-    const [nextCharacter, nextQuests] = await Promise.all([
-      api.getCharacter(accessToken),
-      api.getQuests(accessToken)
-    ]);
-    setCharacter(nextCharacter);
-    setQuests(nextQuests);
+    setIsLoadingData(true);
+    setDataError(null);
+    try {
+      const [nextCharacter, nextQuests] = await Promise.all([
+        api.getCharacter(accessToken),
+        api.getQuests(accessToken)
+      ]);
+      setCharacter(nextCharacter);
+      setQuests(nextQuests);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Could not load the latest room data from the backend.";
+      setDataError(message);
+      throw error;
+    } finally {
+      setIsLoadingData(false);
+    }
   }, []);
 
   const clearClientSession = useCallback(() => {
@@ -92,6 +158,7 @@ export default function MainRoomScreen() {
     setCharacter(null);
     setQuests([]);
     setActiveHotspot(null);
+    setDataError(null);
   }, []);
 
   const handleAuthSubmit = useCallback(
@@ -115,6 +182,16 @@ export default function MainRoomScreen() {
     },
     [loadData]
   );
+
+  const retryLoad = useCallback(async () => {
+    if (!token) return;
+    try {
+      await loadData(token);
+      toast.success("Room data refreshed.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not refresh room data.");
+    }
+  }, [loadData, token]);
 
   useEffect(() => {
     const savedToken = localStorage.getItem(TOKEN_KEY);
@@ -236,7 +313,23 @@ export default function MainRoomScreen() {
 
       <HotspotOverlay activeHotspot={activeHotspot} onHotspotClick={handleHotspotClick} sessionMode={session.mode} />
 
+      {isBootstrapping && (
+        <RoomStatusNotice
+          title="Loading Your Study Room"
+          body="Checking your saved session and pulling the latest quests and progression from the backend."
+        />
+      )}
+
       {!token && !isBootstrapping && <AuthPanel isSubmitting={isMutating} onSubmit={handleAuthSubmit} />}
+
+      {token && !isBootstrapping && dataError && activeHotspot === null && (
+        <RoomStatusNotice
+          title="Could Not Refresh Room Data"
+          body={`${dataError} You can retry without leaving the room.`}
+          actionLabel={isLoadingData ? "Refreshing..." : "Retry"}
+          onAction={isLoadingData ? undefined : retryLoad}
+        />
+      )}
 
       {token && activeHotspot === "desk" && (
         <DeskPanel
@@ -250,12 +343,17 @@ export default function MainRoomScreen() {
           onComplete={completeQuest}
           onSetDuration={setPlannedMinutes}
           onClose={closePanel}
-          isSubmitting={isMutating}
+          isSubmitting={isMutating || isLoadingData}
         />
       )}
 
       {token && activeHotspot === "corkboard" && (
-        <CorkBoardPanel quests={quests} onClose={closePanel} />
+        <CorkBoardPanel
+          quests={quests}
+          isLoading={isLoadingData}
+          errorMessage={dataError}
+          onClose={closePanel}
+        />
       )}
 
       {token && activeHotspot === "shelf" && (
@@ -263,6 +361,8 @@ export default function MainRoomScreen() {
           xp={xp}
           level={level}
           xpProgress={xpProgress}
+          isLoading={isLoadingData}
+          errorMessage={dataError}
           onClose={closePanel}
         />
       )}

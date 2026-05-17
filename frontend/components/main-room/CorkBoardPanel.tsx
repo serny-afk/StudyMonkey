@@ -6,6 +6,8 @@ import PanelShell from "./PanelShell";
 
 interface CorkBoardPanelProps {
   quests: QuestSessionRecord[];
+  isLoading?: boolean;
+  errorMessage?: string | null;
   onClose: () => void;
 }
 
@@ -14,7 +16,12 @@ function formatDuration(seconds: number): string {
   return `${minutes} min`;
 }
 
-export default function CorkBoardPanel({ quests, onClose }: CorkBoardPanelProps) {
+export default function CorkBoardPanel({
+  quests,
+  isLoading = false,
+  errorMessage = null,
+  onClose
+}: CorkBoardPanelProps) {
   const [filter, setFilter] = useState<"all" | "open" | "completed">("all");
   const filtered = quests.filter((q) => {
     if (filter === "all") return true;
@@ -91,12 +98,22 @@ export default function CorkBoardPanel({ quests, onClose }: CorkBoardPanelProps)
           </div>
 
           <div className="scrollbar-cozy" style={{ maxHeight: "240px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "6px" }}>
-            {filtered.length === 0 && (
+            {isLoading && (
+              <p style={{ fontSize: "12px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
+                Loading quest log...
+              </p>
+            )}
+            {!isLoading && errorMessage && (
+              <p style={{ fontSize: "12px", color: "#9b4b3f", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
+                {errorMessage}
+              </p>
+            )}
+            {!isLoading && !errorMessage && filtered.length === 0 && (
               <p style={{ fontSize: "12px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
                 No quests in this view yet.
               </p>
             )}
-            {filtered.map((quest) => (
+            {!isLoading && !errorMessage && filtered.map((quest) => (
               <div
                 key={quest.id}
                 className="flex items-start gap-2.5"

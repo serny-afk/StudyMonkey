@@ -9,6 +9,8 @@ interface ShelfPanelProps {
   xp: number;
   level: number;
   xpProgress: number;
+  isLoading?: boolean;
+  errorMessage?: string | null;
   onClose: () => void;
 }
 
@@ -16,6 +18,8 @@ export default function ShelfPanel({
   xp,
   level,
   xpProgress,
+  isLoading = false,
+  errorMessage = null,
   onClose
 }: ShelfPanelProps) {
   const xpInLevel = xp % 500;
@@ -40,29 +44,41 @@ export default function ShelfPanel({
           </div>
 
           <div className="flex items-center gap-3 mb-4 p-3" style={{ background: "linear-gradient(135deg, rgba(61,43,31,0.05), rgba(245,166,35,0.05))", borderRadius: "8px", border: "1px solid rgba(61,43,31,0.08)" }}>
-            <div style={{ flexShrink: 0, width: "72px", height: "72px" }}>
-              <XPRadialChart progress={xpProgress} level={level} />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="font-display" style={{ fontSize: "22px", fontWeight: 700, color: "var(--ink)", fontVariantNumeric: "tabular-nums" }}>
-                  {xp.toLocaleString()}
-                </span>
-                <span style={{ fontSize: "11px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>total XP</span>
-              </div>
-              <div style={{ marginBottom: "4px" }}>
-                <div className="flex justify-between mb-1">
-                  <span style={{ fontSize: "10px", fontFamily: "var(--font-sans)", color: "var(--ink-light)" }}>Lvl {level}</span>
-                  <span style={{ fontSize: "10px", fontFamily: "var(--font-sans)", color: "var(--ink-light)" }}>Lvl {level + 1}</span>
-                </div>
-                <div style={{ height: "6px", background: "rgba(61,43,31,0.1)", borderRadius: "3px", overflow: "hidden" }}>
-                  <div className="xp-fill" style={{ height: "100%", width: `${xpProgress}%`, background: "linear-gradient(90deg, #f5a623, #c8773a)" }} />
-                </div>
-              </div>
-              <p style={{ fontSize: "10px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
-                {xpToNext} XP to level {level + 1}
+            {isLoading ? (
+              <p style={{ fontSize: "12px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
+                Loading progression...
               </p>
-            </div>
+            ) : errorMessage ? (
+              <p style={{ fontSize: "12px", color: "#9b4b3f", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
+                {errorMessage}
+              </p>
+            ) : (
+              <>
+                <div style={{ flexShrink: 0, width: "72px", height: "72px" }}>
+                  <XPRadialChart progress={xpProgress} level={level} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div className="flex items-baseline gap-1 mb-1">
+                    <span className="font-display" style={{ fontSize: "22px", fontWeight: 700, color: "var(--ink)", fontVariantNumeric: "tabular-nums" }}>
+                      {xp.toLocaleString()}
+                    </span>
+                    <span style={{ fontSize: "11px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>total XP</span>
+                  </div>
+                  <div style={{ marginBottom: "4px" }}>
+                    <div className="flex justify-between mb-1">
+                      <span style={{ fontSize: "10px", fontFamily: "var(--font-sans)", color: "var(--ink-light)" }}>Lvl {level}</span>
+                      <span style={{ fontSize: "10px", fontFamily: "var(--font-sans)", color: "var(--ink-light)" }}>Lvl {level + 1}</span>
+                    </div>
+                    <div style={{ height: "6px", background: "rgba(61,43,31,0.1)", borderRadius: "3px", overflow: "hidden" }}>
+                      <div className="xp-fill" style={{ height: "100%", width: `${xpProgress}%`, background: "linear-gradient(90deg, #f5a623, #c8773a)" }} />
+                    </div>
+                  </div>
+                  <p style={{ fontSize: "10px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
+                    {xpToNext} XP to level {level + 1}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
 
           <div
