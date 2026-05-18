@@ -74,7 +74,7 @@ export default function MainRoomScreen() {
 
       <StatusRibbon session={session} level={level} xp={xp} xpProgress={xpProgress} />
 
-      <HotspotOverlay activeHotspot={activeHotspot} onHotspotClick={handleHotspotClick} sessionMode={session.mode} />
+      <HotspotOverlay activeHotspot={activeHotspot} onHotspotClick={handleHotspotClick} />
 
       {isBootstrapping && (
         <RoomStatusNotice

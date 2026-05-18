@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import type { HotspotId, SessionMode } from "./room-types";
+import { ROOM_HOTSPOTS } from "./room-layout";
+import type { HotspotId } from "./room-types";
 
 interface HotspotOverlayProps {
   activeHotspot: HotspotId;
   onHotspotClick: (id: HotspotId) => void;
-  sessionMode: SessionMode;
 }
 
 interface Hotspot {
@@ -17,34 +17,11 @@ interface Hotspot {
   shape: "ellipse" | "rect";
 }
 
-const HOTSPOTS: Hotspot[] = [
-  {
-    id: "desk",
-    label: "Study Desk",
-    hint: "Start a focus session",
-    style: { left: "29%", bottom: "23%", width: "42%", height: "19%" },
-    shape: "rect"
-  },
-  {
-    id: "corkboard",
-    label: "Quest Board",
-    hint: "View your quests",
-    style: { left: "25.5%", top: "13%", width: "19.5%", height: "21%" },
-    shape: "rect"
-  },
-  {
-    id: "shelf",
-    label: "Bookshelf",
-    hint: "XP and stats",
-    style: { right: "4.5%", top: "7.5%", width: "16.5%", height: "51%" },
-    shape: "rect"
-  }
-];
+const HOTSPOTS: Hotspot[] = ROOM_HOTSPOTS;
 
 export default function HotspotOverlay({
   activeHotspot,
   onHotspotClick,
-  sessionMode
 }: HotspotOverlayProps) {
   const [hoveredHotspot, setHoveredHotspot] = useState<HotspotId>(null);
 
@@ -53,7 +30,6 @@ export default function HotspotOverlay({
       {HOTSPOTS.map((hotspot) => {
         const isActive = activeHotspot === hotspot.id;
         const isHovered = hoveredHotspot === hotspot.id;
-        const showDeskPulse = hotspot.id === "desk" && sessionMode === "focusing";
 
         return (
           <button
@@ -66,7 +42,7 @@ export default function HotspotOverlay({
               cursor: "pointer",
               borderRadius: hotspot.shape === "ellipse" ? "50%" : "8px",
               transition: "all 0.25s ease",
-              outline: "none"
+              outline: "none",
             }}
             onClick={() => onHotspotClick(hotspot.id)}
             onMouseEnter={() => setHoveredHotspot(hotspot.id)}
@@ -94,25 +70,11 @@ export default function HotspotOverlay({
                   ? "0 0 20px 4px rgba(245,166,35,0.25), inset 0 0 12px rgba(245,166,35,0.1)"
                   : isHovered
                     ? "0 0 14px 2px rgba(245,166,35,0.15)"
-                    : showDeskPulse
-                      ? "0 0 16px 6px rgba(122,158,126,0.25)"
-                      : "none",
+                    : "none",
                 transition: "all 0.25s ease",
-                pointerEvents: "none"
+                pointerEvents: "none",
               }}
             />
-
-            {showDeskPulse && (
-              <div
-                className="timer-pulse absolute"
-                style={{
-                  inset: "-8px",
-                  borderRadius: "12px",
-                  border: "2px solid rgba(122,158,126,0.4)",
-                  pointerEvents: "none"
-                }}
-              />
-            )}
 
             {isHovered && !isActive && (
               <div
@@ -131,7 +93,7 @@ export default function HotspotOverlay({
                   whiteSpace: "nowrap",
                   boxShadow: "0 2px 8px rgba(61,43,31,0.3)",
                   letterSpacing: "0.02em",
-                  zIndex: 100
+                  zIndex: 100,
                 }}
               >
                 {hotspot.hint}
@@ -145,7 +107,7 @@ export default function HotspotOverlay({
                     height: 0,
                     borderLeft: "5px solid transparent",
                     borderRight: "5px solid transparent",
-                    borderTop: "5px solid var(--walnut)"
+                    borderTop: "5px solid var(--walnut)",
                   }}
                 />
               </div>

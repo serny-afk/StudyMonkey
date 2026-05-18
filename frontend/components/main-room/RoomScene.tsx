@@ -1,5 +1,6 @@
 "use client";
 
+import { INTERACTIVE_ROOM_OBJECTS } from "./room-layout";
 import type { SessionMode } from "./room-types";
 
 interface RoomSceneProps {
@@ -44,6 +45,7 @@ const ambienceConfig = {
 
 export default function RoomScene({ ambience, sessionMode }: RoomSceneProps) {
   const cfg = ambienceConfig[ambience];
+  const { corkboard, desk, shelf } = INTERACTIVE_ROOM_OBJECTS;
 
   return (
     <div className="absolute inset-0 z-0 overflow-hidden">
@@ -117,7 +119,7 @@ export default function RoomScene({ ambience, sessionMode }: RoomSceneProps) {
         }}
       />
 
-      <div className="absolute" style={{ left: "6%", top: "12%", width: "18%", maxWidth: "260px" }}>
+      <div className="absolute" style={{ left: "4.5%", top: "9.5%", width: "25%", maxWidth: "380px" }}>
         <div
           className="relative"
           style={{
@@ -219,7 +221,7 @@ export default function RoomScene({ ambience, sessionMode }: RoomSceneProps) {
 
         <div
           className="absolute pointer-events-none"
-          style={{ top: "-8px", left: "-20px", width: "30px", bottom: "-8px" }}
+          style={{ top: "-12px", left: "-26px", width: "38px", bottom: "-12px" }}
         >
           <div
             style={{
@@ -234,7 +236,7 @@ export default function RoomScene({ ambience, sessionMode }: RoomSceneProps) {
 
         <div
           className="absolute pointer-events-none"
-          style={{ top: "-8px", right: "-20px", width: "30px", bottom: "-8px" }}
+          style={{ top: "-12px", right: "-26px", width: "38px", bottom: "-12px" }}
         >
           <div
             style={{
@@ -250,17 +252,17 @@ export default function RoomScene({ ambience, sessionMode }: RoomSceneProps) {
         <div
           style={{
             position: "absolute",
-            top: "-12px",
-            left: "-28px",
-            right: "-28px",
-            height: "6px",
+            top: "-16px",
+            left: "-46px",
+            right: "-46px",
+            height: "8px",
             background: "#4a2e14",
-            borderRadius: "3px"
+            borderRadius: "999px"
           }}
         />
       </div>
 
-      <div className="absolute" style={{ right: "5%", top: "8%", width: "16%", maxWidth: "220px" }}>
+      <div className="absolute" style={shelf.visual}>
         <div
           style={{
             background: "linear-gradient(180deg, #6b4c35 0%, #5a3a20 100%)",
@@ -381,16 +383,7 @@ export default function RoomScene({ ambience, sessionMode }: RoomSceneProps) {
         />
       </div>
 
-      <div
-        className="absolute"
-        style={{
-          left: "50%",
-          bottom: "28%",
-          transform: "translateX(-50%)",
-          width: "40%",
-          maxWidth: "560px"
-        }}
-      >
+      <div className="absolute" style={desk.visual}>
         <div
           style={{
             background: "linear-gradient(180deg, #8b6340 0%, #7a5530 60%, #6b4520 100%)",
@@ -519,7 +512,7 @@ export default function RoomScene({ ambience, sessionMode }: RoomSceneProps) {
         </div>
       </div>
 
-      <div className="absolute" style={{ left: "26%", top: "14%", width: "18%", maxWidth: "250px" }}>
+      <div className="absolute" style={corkboard.visual}>
         <div
           className="surface-cork"
           style={{
@@ -585,67 +578,30 @@ export default function RoomScene({ ambience, sessionMode }: RoomSceneProps) {
         </div>
       </div>
 
-      <div className="absolute animate-breathe" style={{ right: "22%", bottom: "30%", width: "8%", maxWidth: "100px" }}>
-        <div
+      <div
+        className="absolute"
+        style={{
+          right: "14.5%",
+          bottom: "15.5%",
+          width: "22.5%",
+          maxWidth: "330px",
+          minWidth: "216px",
+          aspectRatio: "1 / 1.18",
+          filter: "drop-shadow(0 12px 18px rgba(61,43,31,0.18))"
+        }}
+      >
+        <img
+          src="/assets/monkey_avatar_1.png"
+          alt="StudyMonkey avatar"
           style={{
-            width: "50px",
-            height: "60px",
-            background: "linear-gradient(180deg, #8b5e3c, #6b4020)",
-            borderRadius: "50% 50% 40% 40%",
-            position: "relative"
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            display: "block",
+            userSelect: "none",
+            pointerEvents: "none"
           }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: "-24px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "40px",
-              height: "38px",
-              background: "linear-gradient(180deg, #a0704a, #8b5e3c)",
-              borderRadius: "50%"
-            }}
-          >
-            <div style={{ position: "absolute", left: "-8px", top: "10px", width: "12px", height: "10px", background: "#a0704a", borderRadius: "50%" }} />
-            <div style={{ position: "absolute", right: "-8px", top: "10px", width: "12px", height: "10px", background: "#a0704a", borderRadius: "50%" }} />
-            <div style={{ position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)", width: "24px", height: "16px", background: "#c4956a", borderRadius: "50%" }} />
-            <div style={{ position: "absolute", top: "12px", left: "8px", width: "6px", height: "6px", background: "#2a1a0e", borderRadius: "50%" }} />
-            <div style={{ position: "absolute", top: "12px", right: "8px", width: "6px", height: "6px", background: "#2a1a0e", borderRadius: "50%" }} />
-            <div style={{ position: "absolute", top: "13px", left: "10px", width: "2px", height: "2px", background: "white", borderRadius: "50%" }} />
-            <div style={{ position: "absolute", top: "13px", right: "10px", width: "2px", height: "2px", background: "white", borderRadius: "50%" }} />
-            <div style={{ position: "absolute", bottom: "8px", left: "50%", transform: "translateX(-50%)", width: "12px", height: "5px", border: "1.5px solid #2a1a0e", borderTop: "none", borderRadius: "0 0 8px 8px" }} />
-          </div>
-
-          <div style={{ position: "absolute", left: "-8px", top: "10px", width: "12px", height: "28px", background: "#8b5e3c", borderRadius: "6px", transform: "rotate(-15deg)" }} />
-          <div style={{ position: "absolute", right: "-8px", top: "10px", width: "12px", height: "28px", background: "#8b5e3c", borderRadius: "6px", transform: "rotate(15deg)" }} />
-          <div style={{ position: "absolute", right: "-20px", bottom: "0", width: "24px", height: "40px", border: "4px solid #8b5e3c", borderLeft: "none", borderRadius: "0 40px 40px 0", borderBottom: "none" }} />
-        </div>
-      </div>
-
-      <div className="absolute" style={{ right: "24%", top: "16%", width: "8%", maxWidth: "100px" }}>
-        <div style={{ background: "#5a3a20", padding: "6px", borderRadius: "3px", boxShadow: "2px 3px 8px rgba(61,43,31,0.3)" }}>
-          <div
-            style={{
-              background: "linear-gradient(135deg, #87CEEB, #c8e8f5)",
-              aspectRatio: "4/3",
-              borderRadius: "1px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <div
-              style={{
-                width: "24px",
-                height: "24px",
-                borderRadius: "50% 50% 50% 0",
-                transform: "rotate(-20deg)",
-                background: "linear-gradient(135deg, #7a9e4e, #4e8e6b)"
-              }}
-            />
-          </div>
-        </div>
+        />
       </div>
 
       {[15, 35, 55, 72, 88].map((x, di) => (
