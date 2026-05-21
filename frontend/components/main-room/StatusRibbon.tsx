@@ -16,9 +16,9 @@ function formatTime(seconds: number): string {
 }
 
 const MODE_CONFIG = {
-  idle: { label: "Idle", bg: "rgba(122,98,72,0.85)", dot: "#c9a87c" },
-  focusing: { label: "Focusing", bg: "rgba(61,43,31,0.9)", dot: "#7a9e7e" },
-  paused: { label: "Paused", bg: "rgba(61,43,31,0.9)", dot: "#f5a623" }
+  idle: { label: "Idle", bg: "rgba(19,22,34,0.76)", dot: "#8d96b2" },
+  focusing: { label: "Focusing", bg: "rgba(17,21,34,0.82)", dot: "#2684ff" },
+  paused: { label: "Paused", bg: "rgba(17,21,34,0.82)", dot: "#f5a623" }
 };
 
 export default function StatusRibbon({
@@ -31,49 +31,20 @@ export default function StatusRibbon({
 
   return (
     <div
-      className="absolute top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-2"
+      className="absolute top-0 left-0 right-0 z-40 flex items-start justify-end px-6 py-5"
       style={{
-        background: "linear-gradient(180deg, rgba(61,43,31,0.75) 0%, transparent 100%)",
+        background: "linear-gradient(180deg, rgba(8,11,18,0.3) 0%, transparent 100%)",
         pointerEvents: "none"
       }}
     >
-      <div className="flex items-center gap-2" style={{ pointerEvents: "auto" }}>
-        <div
-          style={{
-            width: "28px",
-            height: "28px",
-            background: "linear-gradient(135deg, #f5a623, #c8773a)",
-            borderRadius: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "14px",
-            boxShadow: "0 2px 6px rgba(61,43,31,0.3)"
-          }}
-        >
-          SM
-        </div>
-        <span
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "16px",
-            fontWeight: 600,
-            color: "var(--cream)",
-            textShadow: "0 1px 4px rgba(61,43,31,0.5)",
-            letterSpacing: "0.01em"
-          }}
-        >
-          StudyMonkey
-        </span>
-      </div>
-
-      <div className="flex items-center gap-3" style={{ pointerEvents: "auto" }}>
+      <div className="flex items-center gap-3" style={{ pointerEvents: "auto", marginRight: "min(360px, 25vw)" }}>
         <div
           className="flex items-center gap-1.5 px-3 py-1 rounded-full"
           style={{
             background: modeConfig.bg,
-            border: "1px solid rgba(255,255,255,0.1)",
-            backdropFilter: "blur(8px)"
+            border: "1px solid rgba(255,255,255,0.06)",
+            boxShadow: "0 10px 24px rgba(8, 12, 20, 0.24)",
+            backdropFilter: "blur(14px)"
           }}
         >
           <div
@@ -82,7 +53,8 @@ export default function StatusRibbon({
               width: "6px",
               height: "6px",
               borderRadius: "50%",
-              background: modeConfig.dot
+              background: modeConfig.dot,
+              boxShadow: session.mode === "focusing" ? "0 0 10px rgba(38,132,255,0.55)" : "none"
             }}
           />
           <span
@@ -90,7 +62,7 @@ export default function StatusRibbon({
               fontFamily: "var(--font-sans)",
               fontSize: "12px",
               fontWeight: 600,
-              color: "var(--cream)",
+              color: "#f6f8fc",
               letterSpacing: "0.05em"
             }}
           >
@@ -104,8 +76,8 @@ export default function StatusRibbon({
             style={{
               fontSize: "18px",
               fontWeight: 700,
-              color: "var(--cream)",
-              textShadow: "0 1px 4px rgba(61,43,31,0.5)",
+              color: "#f5f7fb",
+              textShadow: "0 1px 6px rgba(7,14,27,0.32)",
               fontVariantNumeric: "tabular-nums",
               minWidth: "56px",
               textAlign: "center"
@@ -114,7 +86,6 @@ export default function StatusRibbon({
             {formatTime(session.timeRemaining)}
           </div>
         )}
-
       </div>
 
       <div className="flex items-center gap-3" style={{ pointerEvents: "auto" }}>
@@ -122,13 +93,13 @@ export default function StatusRibbon({
           <div className="flex items-center gap-1.5">
             <span
               style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "10px",
-                fontWeight: 500,
-                color: "rgba(253,246,227,0.7)",
-                letterSpacing: "0.05em"
-              }}
-            >
+              fontFamily: "var(--font-sans)",
+              fontSize: "10px",
+              fontWeight: 500,
+              color: "rgba(230,236,248,0.68)",
+              letterSpacing: "0.05em"
+            }}
+          >
               LVL
             </span>
             <span
@@ -136,7 +107,7 @@ export default function StatusRibbon({
                 fontFamily: "var(--font-display)",
                 fontSize: "14px",
                 fontWeight: 700,
-                color: "#f5a623"
+                color: "#4aa3ff"
               }}
             >
               {level}
@@ -145,7 +116,7 @@ export default function StatusRibbon({
               style={{
                 fontFamily: "var(--font-sans)",
                 fontSize: "10px",
-                color: "rgba(253,246,227,0.6)"
+                color: "rgba(230,236,248,0.5)"
               }}
             >
               {(xp % 500)}/{500} XP
@@ -155,7 +126,7 @@ export default function StatusRibbon({
             style={{
               width: "80px",
               height: "4px",
-              background: "rgba(253,246,227,0.15)",
+              background: "rgba(230,236,248,0.14)",
               borderRadius: "2px",
               overflow: "hidden"
             }}
@@ -165,7 +136,7 @@ export default function StatusRibbon({
               style={{
                 height: "100%",
                 width: `${xpProgress}%`,
-                background: "linear-gradient(90deg, #f5a623, #c8773a)",
+                background: "linear-gradient(90deg, #4aa3ff, #2684ff)",
                 borderRadius: "2px"
               }}
             />

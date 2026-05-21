@@ -4,7 +4,7 @@ import { useState } from "react";
 import PanelShell from "./PanelShell";
 import type { SessionState } from "./room-types";
 
-interface DeskPanelProps {
+interface FocusSessionPanelProps {
   session: SessionState;
   questTitle: string;
   onQuestTitleChange: (value: string) => void;
@@ -30,7 +30,7 @@ function getProgressPercent(remaining: number, total: number): number {
   return ((total - remaining) / total) * 100;
 }
 
-export default function DeskPanel({
+export default function FocusSessionPanel({
   session,
   questTitle,
   onQuestTitleChange,
@@ -42,7 +42,7 @@ export default function DeskPanel({
   onSetDuration,
   onClose,
   isSubmitting
-}: DeskPanelProps) {
+}: FocusSessionPanelProps) {
   const [showDurationPicker, setShowDurationPicker] = useState(false);
   const progress = getProgressPercent(session.timeRemaining, session.sessionDuration);
   const sessionMinutes = session.sessionDuration / 60;
@@ -52,13 +52,15 @@ export default function DeskPanel({
   return (
     <PanelShell placement="right">
       <div
-        className="surface-parchment shadow-paper-lg"
+        className="shadow-paper-lg"
         style={{
-          borderRadius: "4px 12px 12px 4px",
-          border: "1.5px solid var(--border)",
+          borderRadius: "28px",
+          background: "linear-gradient(180deg, rgba(18,20,33,0.96), rgba(24,27,41,0.94))",
+          border: "1px solid rgba(255,255,255,0.07)",
           position: "relative",
           maxHeight: "calc(100vh - 24px)",
-          overflowY: "auto"
+          overflowY: "auto",
+          backdropFilter: "blur(18px)"
         }}
       >
         <div style={{ padding: "24px 20px 20px" }}>
@@ -66,14 +68,14 @@ export default function DeskPanel({
             <div>
               <h2
                 className="font-display"
-                style={{ fontSize: "18px", fontWeight: 600, color: "var(--ink)", lineHeight: 1.2 }}
+                style={{ fontSize: "18px", fontWeight: 700, color: "#f5f7fb", lineHeight: 1.2 }}
               >
                 Study Session
               </h2>
               <p
                 style={{
                   fontSize: "12px",
-                  color: "var(--ink-light)",
+                  color: "rgba(188,195,217,0.62)",
                   marginTop: "2px",
                   fontFamily: "var(--font-sans)"
                 }}
@@ -93,13 +95,13 @@ export default function DeskPanel({
           <div className="flex justify-center mb-4">
             <div className="relative" style={{ width: "140px", height: "140px" }}>
               <svg width="140" height="140" style={{ transform: "rotate(-90deg)" }}>
-                <circle cx="70" cy="70" r="54" fill="none" stroke="rgba(61,43,31,0.1)" strokeWidth="8" />
+                <circle cx="70" cy="70" r="54" fill="none" stroke="rgba(230,236,248,0.12)" strokeWidth="8" />
                 <circle
                   cx="70"
                   cy="70"
                   r="54"
                   fill="none"
-                  stroke={session.mode === "paused" ? "#7a9e7e" : "#c8773a"}
+                  stroke={session.mode === "paused" ? "#7a9e7e" : "#2684ff"}
                   strokeWidth="8"
                   strokeLinecap="round"
                   strokeDasharray={circumference}
@@ -113,7 +115,7 @@ export default function DeskPanel({
                   style={{
                     fontSize: "28px",
                     fontWeight: 700,
-                    color: "var(--ink)",
+                    color: "#f5f7fb",
                     fontVariantNumeric: "tabular-nums",
                     lineHeight: 1
                   }}
@@ -123,7 +125,7 @@ export default function DeskPanel({
                 <div
                   style={{
                     fontSize: "11px",
-                    color: "var(--ink-light)",
+                    color: "rgba(188,195,217,0.58)",
                     fontFamily: "var(--font-sans)",
                     marginTop: "4px",
                     letterSpacing: "0.05em"
@@ -136,7 +138,7 @@ export default function DeskPanel({
                     style={{
                       fontSize: "10px",
                       fontWeight: 600,
-                      color: "var(--ink-light)",
+                      color: "rgba(188,195,217,0.58)",
                       fontFamily: "var(--font-sans)",
                       marginTop: "6px",
                       textAlign: "center",
@@ -158,10 +160,10 @@ export default function DeskPanel({
                   style={{
                     marginBottom: "12px",
                     padding: "10px 12px",
-                    borderRadius: "8px",
-                    background: "rgba(200,119,58,0.08)",
-                    border: "1px solid rgba(200,119,58,0.18)",
-                    color: "var(--ink)",
+                    borderRadius: "16px",
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    color: "#eef2fb",
                     fontSize: "12px",
                     lineHeight: 1.5
                   }}
@@ -176,7 +178,7 @@ export default function DeskPanel({
                     display: "block",
                     fontSize: "11px",
                     fontWeight: 600,
-                    color: "var(--ink-light)",
+                    color: "rgba(188,195,217,0.58)",
                     fontFamily: "var(--font-sans)",
                     letterSpacing: "0.06em",
                     textTransform: "uppercase",
@@ -199,7 +201,7 @@ export default function DeskPanel({
                   style={{
                     fontSize: "11px",
                     fontWeight: 600,
-                    color: "var(--ink-light)",
+                    color: "rgba(188,195,217,0.58)",
                     fontFamily: "var(--font-sans)",
                     letterSpacing: "0.06em",
                     textTransform: "uppercase"
@@ -211,7 +213,7 @@ export default function DeskPanel({
                   onClick={() => setShowDurationPicker((s) => !s)}
                   style={{
                     fontSize: "11px",
-                    color: "var(--primary)",
+                    color: "#4aa3ff",
                     fontFamily: "var(--font-sans)",
                     fontWeight: 600,
                     background: "none",
@@ -240,12 +242,10 @@ export default function DeskPanel({
                         fontSize: "12px",
                         fontWeight: 600,
                         fontFamily: "var(--font-sans)",
-                        background:
-                          session.sessionDuration === mins * 60 ? "var(--primary)" : "var(--parchment-dark)",
-                        color: session.sessionDuration === mins * 60 ? "var(--cream)" : "var(--ink)",
-                        border: "1.5px solid",
-                        borderColor:
-                          session.sessionDuration === mins * 60 ? "var(--primary)" : "var(--border)",
+                        background: session.sessionDuration === mins * 60 ? "linear-gradient(180deg, #3592ff 0%, #1f7cf2 100%)" : "rgba(255,255,255,0.05)",
+                        color: session.sessionDuration === mins * 60 ? "#f7fbff" : "rgba(232,239,247,0.76)",
+                        border: "1px solid",
+                        borderColor: session.sessionDuration === mins * 60 ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.07)",
                         cursor: "pointer",
                         transition: "all 0.15s ease"
                       }}
@@ -258,17 +258,17 @@ export default function DeskPanel({
               ) : (
                 <div
                   style={{
-                    background: "var(--parchment-dark)",
-                    borderRadius: "8px",
+                    background: "rgba(255,255,255,0.05)",
+                    borderRadius: "14px",
                     padding: "8px 12px",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
-                    border: "1.5px solid var(--border)"
+                    border: "1px solid rgba(255,255,255,0.06)"
                   }}
                 >
                   <span
-                    style={{ fontFamily: "var(--font-sans)", fontSize: "13px", fontWeight: 600, color: "var(--ink)" }}
+                    style={{ fontFamily: "var(--font-sans)", fontSize: "13px", fontWeight: 600, color: "#f5f7fb" }}
                   >
                     {sessionMinutes} minutes
                   </span>
@@ -306,7 +306,7 @@ export default function DeskPanel({
                   className="btn-primary flex-1"
                   disabled={isSubmitting}
                   onClick={onResume}
-                  style={{ background: "#7a9e7e" }}
+                  style={{ background: "linear-gradient(180deg, #3592ff 0%, #1f7cf2 100%)" }}
                   type="button"
                 >
                   {isSubmitting ? "Working..." : "Resume Focus"}

@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { QuestSessionRecord } from "../../lib/api";
 import PanelShell from "./PanelShell";
 
-interface CorkBoardPanelProps {
+interface QuestLogPanelProps {
   quests: QuestSessionRecord[];
   isLoading?: boolean;
   errorMessage?: string | null;
@@ -16,12 +16,12 @@ function formatDuration(seconds: number): string {
   return `${minutes} min`;
 }
 
-export default function CorkBoardPanel({
+export default function QuestLogPanel({
   quests,
   isLoading = false,
   errorMessage = null,
   onClose
-}: CorkBoardPanelProps) {
+}: QuestLogPanelProps) {
   const [filter, setFilter] = useState<"all" | "open" | "completed">("all");
   const filtered = quests.filter((q) => {
     if (filter === "all") return true;
@@ -32,16 +32,28 @@ export default function CorkBoardPanel({
   const totalCount = quests.length;
 
   return (
-    <PanelShell
-      placement="left"
-      width="min(300px, calc(100vw - 24px))"
-      style={{ transform: "rotate(-1deg)" }}
-    >
-      <div className="surface-cork shadow-paper-lg" style={{ borderRadius: "6px", border: "6px solid #8b6340", padding: "16px" }}>
-        <div className="surface-parchment shadow-paper" style={{ borderRadius: "3px", padding: "16px", transform: "rotate(0.5deg)" }}>
+    <PanelShell placement="right" width="min(360px, calc(100vw - 336px))">
+      <div
+        className="shadow-paper-lg"
+        style={{
+          borderRadius: "28px",
+          background: "linear-gradient(180deg, rgba(18,20,33,0.96), rgba(24,27,41,0.94))",
+          border: "1px solid rgba(255,255,255,0.07)",
+          padding: "16px",
+          backdropFilter: "blur(18px)"
+        }}
+      >
+        <div
+          style={{
+            borderRadius: "22px",
+            padding: "18px",
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.07)"
+          }}
+        >
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h2 className="font-display" style={{ fontSize: "17px", fontWeight: 600, color: "var(--ink)" }}>
+              <h2 className="font-display" style={{ fontSize: "17px", fontWeight: 700, color: "#f5f7fb" }}>
                 Quest Board
               </h2>
               <div className="flex items-center gap-1 mt-1">
@@ -49,7 +61,7 @@ export default function CorkBoardPanel({
                   style={{
                     width: "60px",
                     height: "4px",
-                    background: "rgba(61,43,31,0.1)",
+                    background: "rgba(230,236,248,0.12)",
                     borderRadius: "2px",
                     overflow: "hidden"
                   }}
@@ -58,12 +70,12 @@ export default function CorkBoardPanel({
                     style={{
                       height: "100%",
                       width: `${(completedCount / totalCount) * 100}%`,
-                      background: "linear-gradient(90deg, #7a9e7e, #5a8060)",
+                      background: "linear-gradient(90deg, #4aa3ff, #2684ff)",
                       transition: "width 0.4s ease"
                     }}
                   />
                 </div>
-                <span style={{ fontSize: "10px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
+                <span style={{ fontSize: "10px", color: "rgba(188,195,217,0.58)", fontFamily: "var(--font-sans)" }}>
                   {completedCount}/{totalCount} done
                 </span>
               </div>
@@ -73,21 +85,21 @@ export default function CorkBoardPanel({
             </button>
           </div>
 
-          <div className="flex gap-1 mb-3 p-1" style={{ background: "var(--parchment-dark)", borderRadius: "6px" }}>
+          <div className="flex gap-1 mb-3 p-1" style={{ background: "rgba(255,255,255,0.05)", borderRadius: "14px" }}>
             {(["all", "open", "completed"] as const).map((cat) => (
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}
                 style={{
                   flex: 1,
-                  padding: "4px 8px",
-                  borderRadius: "4px",
+                  padding: "6px 8px",
+                  borderRadius: "10px",
                   fontSize: "11px",
                   fontWeight: 600,
                   fontFamily: "var(--font-sans)",
-                  background: filter === cat ? "var(--parchment)" : "transparent",
-                  color: filter === cat ? "var(--ink)" : "var(--ink-light)",
-                  border: filter === cat ? "1px solid var(--border)" : "1px solid transparent",
+                  background: filter === cat ? "linear-gradient(180deg, #3592ff 0%, #1f7cf2 100%)" : "transparent",
+                  color: filter === cat ? "#f7fbff" : "rgba(188,195,217,0.62)",
+                  border: filter === cat ? "1px solid rgba(255,255,255,0.12)" : "1px solid transparent",
                   cursor: "pointer"
                 }}
                 type="button"
@@ -99,7 +111,7 @@ export default function CorkBoardPanel({
 
           <div className="scrollbar-cozy" style={{ maxHeight: "240px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "6px" }}>
             {isLoading && (
-              <p style={{ fontSize: "12px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
+              <p style={{ fontSize: "12px", color: "rgba(188,195,217,0.58)", fontFamily: "var(--font-sans)" }}>
                 Loading quest log...
               </p>
             )}
@@ -109,7 +121,7 @@ export default function CorkBoardPanel({
               </p>
             )}
             {!isLoading && !errorMessage && filtered.length === 0 && (
-              <p style={{ fontSize: "12px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
+              <p style={{ fontSize: "12px", color: "rgba(188,195,217,0.58)", fontFamily: "var(--font-sans)" }}>
                 No quests in this view yet.
               </p>
             )}
@@ -119,9 +131,9 @@ export default function CorkBoardPanel({
                 className="flex items-start gap-2.5"
                 style={{
                   padding: "10px",
-                  borderRadius: "6px",
-                  background: quest.status === "completed" ? "rgba(122,158,126,0.08)" : "rgba(61,43,31,0.03)",
-                  border: `1px solid ${quest.status === "completed" ? "rgba(122,158,126,0.2)" : "rgba(61,43,31,0.08)"}`
+                  borderRadius: "16px",
+                  background: quest.status === "completed" ? "rgba(255,255,255,0.065)" : "rgba(255,255,255,0.04)",
+                  border: `1px solid ${quest.status === "completed" ? "rgba(74,163,255,0.16)" : "rgba(255,255,255,0.06)"}`
                 }}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -129,7 +141,7 @@ export default function CorkBoardPanel({
                     style={{
                       fontSize: "12px",
                       fontWeight: 500,
-                      color: quest.status === "completed" ? "var(--ink-light)" : "var(--ink)",
+                      color: quest.status === "completed" ? "rgba(188,195,217,0.72)" : "#f5f7fb",
                       fontFamily: "var(--font-sans)",
                       lineHeight: 1.4
                     }}
@@ -146,25 +158,25 @@ export default function CorkBoardPanel({
                         borderRadius: "99px",
                         background:
                           quest.status === "completed"
-                            ? "rgba(122,158,126,0.15)"
+                            ? "rgba(74,163,255,0.16)"
                             : quest.status === "active"
-                              ? "rgba(200,119,58,0.15)"
-                              : "rgba(61,43,31,0.08)",
+                              ? "rgba(38,132,255,0.18)"
+                              : "rgba(255,255,255,0.08)",
                         color:
                           quest.status === "completed"
-                            ? "#5a8060"
+                            ? "#8ec9ff"
                             : quest.status === "active"
-                              ? "#c8773a"
-                              : "var(--ink-light)",
+                              ? "#5faeff"
+                              : "rgba(188,195,217,0.66)",
                         fontFamily: "var(--font-sans)"
                       }}
                     >
                       {quest.status.toUpperCase()}
                     </span>
-                    <span style={{ fontSize: "10px", color: "var(--ink-light)", fontFamily: "var(--font-sans)", fontWeight: 600 }}>
+                    <span style={{ fontSize: "10px", color: "rgba(188,195,217,0.58)", fontFamily: "var(--font-sans)", fontWeight: 600 }}>
                       {quest.plannedDurationMinutes} min planned
                     </span>
-                    <span style={{ fontSize: "10px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
+                    <span style={{ fontSize: "10px", color: "rgba(188,195,217,0.58)", fontFamily: "var(--font-sans)" }}>
                       {formatDuration(quest.actualDurationSeconds)} logged
                     </span>
                   </div>

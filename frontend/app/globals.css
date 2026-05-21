@@ -5,11 +5,11 @@
 :root {
   --background: #f5e6c8;
   --foreground: #3d2b1f;
-  --primary: #c8773a;
-  --primary-foreground: #fdf6e3;
-  --secondary: #7a9e7e;
+  --primary: #2684ff;
+  --primary-foreground: #f7fbff;
+  --secondary: #6f8dff;
   --secondary-foreground: #fdf6e3;
-  --accent: #d4856a;
+  --accent: #4aa3ff;
   --accent-foreground: #fdf6e3;
   --muted: #e8d5b0;
   --muted-foreground: #7a6248;
@@ -17,10 +17,10 @@
   --card-foreground: #3d2b1f;
   --border: #c9a87c;
   --input: #ede3cc;
-  --ring: #c8773a;
+  --ring: #2684ff;
   --radius: 0.5rem;
-  --font-sans: "Trebuchet MS", "Segoe UI", sans-serif;
-  --font-display: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --font-sans: "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "SF Pro Display", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --parchment: #fdf6e3;
   --parchment-dark: #f0e6c8;
   --ink: #3d2b1f;
@@ -143,40 +143,40 @@
   }
 
   .btn-primary {
-    background-color: var(--primary);
+    background: linear-gradient(180deg, #3592ff 0%, #1f7cf2 100%);
     color: var(--primary-foreground);
     font-family: var(--font-sans);
     font-weight: 600;
     font-size: 14px;
     padding: 11px 24px;
-    border-radius: 8px;
-    border: none;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-    box-shadow: 0 2px 8px rgba(200, 119, 58, 0.3);
+    box-shadow: 0 10px 24px rgba(31, 124, 242, 0.28);
   }
 
   .btn-primary:hover {
-    background-color: #b5662a;
+    background: linear-gradient(180deg, #4aa3ff 0%, #2684ff 100%);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(200, 119, 58, 0.4);
+    box-shadow: 0 14px 28px rgba(31, 124, 242, 0.32);
   }
 
   .btn-secondary {
-    background-color: transparent;
-    color: var(--primary);
+    background: rgba(18, 31, 47, 0.08);
+    color: #1f4f95;
     font-family: var(--font-sans);
     font-weight: 500;
     font-size: 14px;
     padding: 10px 20px;
-    border-radius: 8px;
-    border: 1.5px solid var(--primary);
+    border-radius: 14px;
+    border: 1px solid rgba(38, 132, 255, 0.18);
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.15s ease;
   }
 
   .btn-secondary:hover {
-    background-color: rgba(200, 119, 58, 0.08);
+    background-color: rgba(38, 132, 255, 0.08);
     transform: translateY(-1px);
   }
 

@@ -5,7 +5,7 @@ import PanelShell from "./PanelShell";
 
 const XPRadialChart = dynamic(() => import("./XPRadialChart"), { ssr: false });
 
-interface ShelfPanelProps {
+interface ProgressPanelProps {
   xp: number;
   level: number;
   xpProgress: number;
@@ -14,27 +14,36 @@ interface ShelfPanelProps {
   onClose: () => void;
 }
 
-export default function ShelfPanel({
+export default function ProgressPanel({
   xp,
   level,
   xpProgress,
   isLoading = false,
   errorMessage = null,
   onClose
-}: ShelfPanelProps) {
+}: ProgressPanelProps) {
   const xpInLevel = xp % 500;
   const xpToNext = 500 - xpInLevel;
 
   return (
     <PanelShell placement="right" width="min(300px, calc(100vw - 24px))">
-      <div className="surface-parchment shadow-paper-lg" style={{ borderRadius: "8px", border: "1.5px solid var(--border)", position: "relative" }}>
+      <div
+        className="shadow-paper-lg"
+        style={{
+          borderRadius: "28px",
+          border: "1px solid rgba(255,255,255,0.07)",
+          position: "relative",
+          background: "linear-gradient(180deg, rgba(18,20,33,0.96), rgba(24,27,41,0.94))",
+          backdropFilter: "blur(18px)"
+        }}
+      >
         <div style={{ padding: "20px 18px 18px" }}>
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h2 className="font-display" style={{ fontSize: "17px", fontWeight: 600, color: "var(--ink)" }}>
+              <h2 className="font-display" style={{ fontSize: "17px", fontWeight: 700, color: "#f5f7fb" }}>
                 Progress Log
               </h2>
-              <p style={{ fontSize: "11px", color: "var(--ink-light)", fontFamily: "var(--font-sans)", marginTop: "2px" }}>
+              <p style={{ fontSize: "11px", color: "rgba(188,195,217,0.62)", fontFamily: "var(--font-sans)", marginTop: "2px" }}>
                 Level {level} Scholar
               </p>
             </div>
@@ -43,9 +52,9 @@ export default function ShelfPanel({
             </button>
           </div>
 
-          <div className="flex items-center gap-3 mb-4 p-3" style={{ background: "linear-gradient(135deg, rgba(61,43,31,0.05), rgba(245,166,35,0.05))", borderRadius: "8px", border: "1px solid rgba(61,43,31,0.08)" }}>
+          <div className="flex items-center gap-3 mb-4 p-3" style={{ background: "rgba(255,255,255,0.05)", borderRadius: "18px", border: "1px solid rgba(255,255,255,0.07)" }}>
             {isLoading ? (
-              <p style={{ fontSize: "12px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
+              <p style={{ fontSize: "12px", color: "rgba(188,195,217,0.62)", fontFamily: "var(--font-sans)" }}>
                 Loading progression...
               </p>
             ) : errorMessage ? (
@@ -59,21 +68,21 @@ export default function ShelfPanel({
                 </div>
                 <div style={{ flex: 1 }}>
                   <div className="flex items-baseline gap-1 mb-1">
-                    <span className="font-display" style={{ fontSize: "22px", fontWeight: 700, color: "var(--ink)", fontVariantNumeric: "tabular-nums" }}>
+                    <span className="font-display" style={{ fontSize: "22px", fontWeight: 700, color: "#f5f7fb", fontVariantNumeric: "tabular-nums" }}>
                       {xp.toLocaleString()}
                     </span>
-                    <span style={{ fontSize: "11px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>total XP</span>
+                    <span style={{ fontSize: "11px", color: "rgba(188,195,217,0.58)", fontFamily: "var(--font-sans)" }}>total XP</span>
                   </div>
                   <div style={{ marginBottom: "4px" }}>
                     <div className="flex justify-between mb-1">
-                      <span style={{ fontSize: "10px", fontFamily: "var(--font-sans)", color: "var(--ink-light)" }}>Lvl {level}</span>
-                      <span style={{ fontSize: "10px", fontFamily: "var(--font-sans)", color: "var(--ink-light)" }}>Lvl {level + 1}</span>
+                      <span style={{ fontSize: "10px", fontFamily: "var(--font-sans)", color: "rgba(188,195,217,0.58)" }}>Lvl {level}</span>
+                      <span style={{ fontSize: "10px", fontFamily: "var(--font-sans)", color: "rgba(188,195,217,0.58)" }}>Lvl {level + 1}</span>
                     </div>
-                    <div style={{ height: "6px", background: "rgba(61,43,31,0.1)", borderRadius: "3px", overflow: "hidden" }}>
-                      <div className="xp-fill" style={{ height: "100%", width: `${xpProgress}%`, background: "linear-gradient(90deg, #f5a623, #c8773a)" }} />
+                    <div style={{ height: "6px", background: "rgba(230,236,248,0.12)", borderRadius: "3px", overflow: "hidden" }}>
+                      <div className="xp-fill" style={{ height: "100%", width: `${xpProgress}%`, background: "linear-gradient(90deg, #4aa3ff, #2684ff)" }} />
                     </div>
                   </div>
-                  <p style={{ fontSize: "10px", color: "var(--ink-light)", fontFamily: "var(--font-sans)" }}>
+                  <p style={{ fontSize: "10px", color: "rgba(188,195,217,0.58)", fontFamily: "var(--font-sans)" }}>
                     {xpToNext} XP to level {level + 1}
                   </p>
                 </div>
@@ -84,16 +93,16 @@ export default function ShelfPanel({
           <div
             style={{
               padding: "12px",
-              background: "rgba(61,43,31,0.03)",
-              borderRadius: "8px",
-              border: "1px solid rgba(61,43,31,0.07)"
+              background: "rgba(255,255,255,0.05)",
+              borderRadius: "18px",
+              border: "1px solid rgba(255,255,255,0.07)"
             }}
           >
             <p
               style={{
                 fontSize: "10px",
                 fontWeight: 600,
-                color: "var(--ink-light)",
+                color: "rgba(188,195,217,0.52)",
                 fontFamily: "var(--font-sans)",
                 letterSpacing: "0.06em",
                 textTransform: "uppercase",
@@ -102,7 +111,7 @@ export default function ShelfPanel({
             >
               MVP Scope
             </p>
-            <p style={{ fontSize: "12px", color: "var(--ink)", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
+            <p style={{ fontSize: "12px", color: "#edf1fb", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
               This panel currently shows only character progression data that maps cleanly to the backend: level progress and total XP.
             </p>
           </div>

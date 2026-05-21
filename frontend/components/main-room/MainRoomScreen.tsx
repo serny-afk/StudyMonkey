@@ -3,19 +3,20 @@
 import { useCallback, useState } from "react";
 import { Toaster } from "sonner";
 import AuthPanel from "./AuthPanel";
-import CorkBoardPanel from "./CorkBoardPanel";
-import DeskPanel from "./DeskPanel";
-import HotspotOverlay from "./HotspotOverlay";
+import FocusSessionPanel from "./FocusSessionPanel";
+import ProgressPanel from "./ProgressPanel";
+import QuestLogPanel from "./QuestLogPanel";
+import RoomMenu from "./RoomMenu";
 import RoomStatusNotice from "./RoomStatusNotice";
 import RoomScene from "./RoomScene";
-import ShelfPanel from "./ShelfPanel";
 import StatusRibbon from "./StatusRibbon";
-import type { HotspotId } from "./room-types";
+import type { RoomSectionId } from "./room-types";
 import { useRoomBackend } from "./useRoomBackend";
 import { useRoomViewModel } from "./useRoomViewModel";
 
 export default function MainRoomScreen() {
-  const [activeHotspot, setActiveHotspot] = useState<HotspotId>(null);
+  const [activeSection, setActiveSection] = useState<RoomSectionId>("desk");
+  const [menuCollapsed, setMenuCollapsed] = useState(false);
   const [questTitle, setQuestTitle] = useState("Focus Session");
   const [plannedMinutes, setPlannedMinutes] = useState(25);
   const {
@@ -49,11 +50,11 @@ export default function MainRoomScreen() {
     [createAndStartQuest]
   );
 
-  const handleHotspotClick = useCallback((id: HotspotId) => {
-    setActiveHotspot((prev) => (prev === id ? null : id));
+  const handleSectionSelect = useCallback((id: Exclude<RoomSectionId, null>) => {
+    setActiveSection(id);
   }, []);
 
-  const closePanel = useCallback(() => setActiveHotspot(null), []);
+  const closePanel = useCallback(() => setActiveSection(null), []);
 
   return (
     <div className="room-scene">
@@ -70,11 +71,18 @@ export default function MainRoomScreen() {
         }}
       />
 
-      <RoomScene ambience="evening" sessionMode={session.mode} />
+      <RoomScene sessionMode={session.mode} />
 
       <StatusRibbon session={session} level={level} xp={xp} xpProgress={xpProgress} />
 
-      <HotspotOverlay activeHotspot={activeHotspot} onHotspotClick={handleHotspotClick} />
+      {token && !isBootstrapping && (
+        <RoomMenu
+          activeSection={activeSection}
+          onSelect={handleSectionSelect}
+          collapsed={menuCollapsed}
+          onToggleCollapsed={() => setMenuCollapsed((value) => !value)}
+        />
+      )}
 
       {isBootstrapping && (
         <RoomStatusNotice
@@ -85,7 +93,7 @@ export default function MainRoomScreen() {
 
       {!token && !isBootstrapping && <AuthPanel isSubmitting={isMutating} onSubmit={handleAuthSubmit} />}
 
-      {token && !isBootstrapping && dataError && activeHotspot === null && (
+      {token && !isBootstrapping && dataError && activeSection === null && (
         <RoomStatusNotice
           title="Could Not Refresh Room Data"
           body={`${dataError} You can retry without leaving the room.`}
@@ -94,8 +102,8 @@ export default function MainRoomScreen() {
         />
       )}
 
-      {token && activeHotspot === "desk" && (
-        <DeskPanel
+      {token && activeSection === "desk" && (
+        <FocusSessionPanel
           session={session}
           questTitle={questTitle}
           onQuestTitleChange={setQuestTitle}
@@ -110,8 +118,8 @@ export default function MainRoomScreen() {
         />
       )}
 
-      {token && activeHotspot === "corkboard" && (
-        <CorkBoardPanel
+      {token && activeSection === "quests" && (
+        <QuestLogPanel
           quests={quests}
           isLoading={isLoadingData}
           errorMessage={dataError}
@@ -119,8 +127,8 @@ export default function MainRoomScreen() {
         />
       )}
 
-      {token && activeHotspot === "shelf" && (
-        <ShelfPanel
+      {token && activeSection === "stats" && (
+        <ProgressPanel
           xp={xp}
           level={level}
           xpProgress={xpProgress}
